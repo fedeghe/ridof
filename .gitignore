@@ -1,0 +1,6 @@
+.coveralls.yml
+/coverage
+/node_modules
+.printVersion
+/test/*
+

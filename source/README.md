@@ -1,0 +1,3 @@
+# Ridof
+
+Simple state manager
