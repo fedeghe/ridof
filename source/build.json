@@ -1,6 +1,6 @@
 {
     "EXE": "mkdir -p test",
-    "source/test/*.js": "test -plugins=malta-mocha",
-    "source/ridof.js": ".",
-    "source/*.md": ". -vars=source/vars.json"
+    "#source/test/*.js": "test",
+    "#source/ridof.js": ". -plugins=malta-js-uglify...malta-header-comment[name:\"source/header.txt\"]",
+    "#source/*.md": "."
 }

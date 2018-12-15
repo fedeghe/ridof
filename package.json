@@ -2,9 +2,11 @@
   "name": "ridof",
   "version": "1.0.0",
   "description": "Simple state manager",
-  "main": "index.js",
+  "main": "ridof.js",
   "scripts": {
     "build": "malta source/build.json",
+    "buildev": "malta source/buildev.json",
+    "clean": "malta source/clean.json",
     "test": "mocha",
     "cover": "istanbul cover _mocha",
     "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls"
@@ -24,6 +26,8 @@
     "coveralls": "^3.0.2",
     "istanbul": "^0.4.5",
     "malta": "^3.8.18",
+    "malta-header-comment": "^1.0.5",
+    "malta-js-uglify": "^1.0.3",
     "malta-mocha": "^1.0.12",
     "mocha": "^5.2.0",
     "mocha-lcov-reporter": "^1.3.0"

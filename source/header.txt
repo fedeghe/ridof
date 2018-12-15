@@ -1,0 +1,12 @@
+           d8,      d8b            ,d8888b
+          `8P       88P            88P'
+                   d88          d888888P
+  88bd88b  88b d888888   d8888b   ?88'
+  88P'  `  88Pd8P' ?88  d8P' ?88  88P
+ d88      d88 88b  ,88b 88b  d88 d88
+d88'     d88' `?88P'`88b`?8888P'd88'
+
+                                      v. $VERSION$
+
+Date: __DATE__
+Size: __SIZE__
