@@ -39,6 +39,7 @@ const reducer = (oldState, action, params) => {
             newState.name = params.name || 'no name given';
             break;
     }
+    return newState;
 }
 
 // initialState is optional, default is {}
