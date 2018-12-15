@@ -263,8 +263,42 @@ describe('time travel', () => {
 
         //also .. move 0 is uneffective
         store.move(0);
-        assert.equal(count, 7)
+        assert.equal(count, 7);
     });
+
+    it('should replace the reducer', () => {
+        var reducer2 = function (oldState, action, params) {
+                // who cares here
+                return Object.assign({}, params);
+            },
+            store = Ridof.getStore(reducer2);
+        store.subscribe((oldState, newState, action) => {
+            assert.equal(action, 'WHATEVER')
+            assert.equal(JSON.stringify(newState), JSON.stringify({
+                all: 'others',
+                parameters: 'are included',
+                number: 9
+            }))
+        });
+        store.dispatch({
+            type: 'WHATEVER',
+            all: 'others',
+            parameters: 'are included',
+            number: 9
+        });
+        store.reset(); //for listeners
+        store.subscribe((oldState, newState, action) => {
+            assert.equal(JSON.stringify(oldState), JSON.stringify({}))
+            assert.equal(JSON.stringify(newState), JSON.stringify({ name: 'static' }))
+        });
+        store.replaceReducer(() => {
+            return { name: 'static'};
+        });
+        store.dispatch({
+            type: 'NOT REALLY MATTER'
+        });
+    });
+
 });
 
 

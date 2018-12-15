@@ -1,7 +1,9 @@
 var Ridof = (function () {
     "use strict";
     function _emptyObjFun() { return {}; }
-
+    function _validateReducer(r) {
+        if (typeof r() !== 'object') { throw new Error('Reducer should return an object'); }
+    }
     function _pushState(instance, newState, actionType) {
         var oldState = instance.states[instance.currentIndex];
         instance.listeners.forEach(function (sub) {
@@ -16,7 +18,7 @@ var Ridof = (function () {
     function Store(reducer, state) {
         this.reducer = reducer || _emptyObjFun;
         this.state = state || this.reducer();
-        if (typeof reducer() !== 'object') { throw new Error('Reducer should return an object'); }
+        _validateReducer(reducer);
         this.states = [this.state];
         this.currentIndex = 0;
         this.listeners = [];
@@ -54,6 +56,12 @@ var Ridof = (function () {
             self.listeners = self.listeners.slice(0, p).concat(self.listeners.slice(p + 1));
         };
     };
+
+    Store.prototype.replaceReducer = function (reducer) {
+        _validateReducer(reducer);
+        this.reducer = reducer;
+    };
+
     Store.prototype.reset = function () {
         var s0 = this.states[0];
         this.states = [s0];
