@@ -102,8 +102,10 @@ Store.dispatch({
 -----
 Move in the states:
 ``` js
-Store.move(number);
+Store.move(i);
 ```
+The integer passed has to be negative to go back, positive to go forward. So for example we can go back two step calling `Store.move(-2)` then, **if we do NOT dispatch** an action, we could move forward of 1 or 2 steps. In case we target a state that is not indexed in the history array then there will be no effects. 
+
 ----
 Reset state to the initialState, clears history and subscribers
 ``` js
