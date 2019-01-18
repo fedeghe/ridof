@@ -114,7 +114,7 @@ describe('basic actions', () => {
             })
         ];
         store.dispatch({ type: 'RESET' })
-        unsubs.forEach(u => u())
+        
         assert.equal(count, 945)
 
         store.reset();

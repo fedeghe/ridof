@@ -34,13 +34,13 @@ var Ridof = (function () {
             oldState = this.states[this.currentIndex],
             newState = this.reducer(oldState, actionType, action),
             i;
-        // force type removal
         delete newState.type;
         for (i in action) {
             if (i !== "type") {
                 newState[i] = action[i];
             }
         }
+        
         _pushState(this, newState, actionType);
         return this;
     };
@@ -83,6 +83,7 @@ var Ridof = (function () {
         });
         return this;
     };
+    
     return {
         getStore: function (reducer, initState) {
             return new Store(reducer, initState);

@@ -1,6 +1,5 @@
 {
     "EXE": [
         "rm -rf test coverage node_modules",
-        "rm ridof.js"
     ]
 }
