@@ -1,5 +1,5 @@
 install: npm install
-language: node_js
+language: node_js 
 before_script: node_modules/malta/src/bin.js source/build.json
 script: npm test
 after_success:
