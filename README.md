@@ -5,13 +5,12 @@
 
 Simple state manager
 
-## install dev-deps, build and test
 
-    > npm i
-    > npm run build
-    > npm test
+## install it
 
-## Then, in case, use it
+    > npm i ridof
+
+## use it
 
 Create a store
 ``` js

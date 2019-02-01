@@ -1,5 +1,5 @@
 var assert = require('assert'),
-    Ridof = require('../ridof.js');
+    Ridof = require('../dist/index.js');
 
 describe('readme sample', () => {
     it('should work', () => {

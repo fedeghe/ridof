@@ -1,10 +1,10 @@
 {
   "name": "ridof",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Simple state manager",
-  "main": "ridof.js",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "malta source/build.json",
+    "build": "malta source/buildtr.json",
     "buildev": "malta source/buildev.json",
     "clean": "malta source/clean.json",
     "test": "mocha",

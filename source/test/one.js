@@ -1,5 +1,5 @@
 var assert = require('assert'),
-    Ridof = require('../ridof.js');
+    Ridof = require('../dist/index.js');
 
 var initState = { number: 0, valid: true },
     reducer = function (state, action, params) {
