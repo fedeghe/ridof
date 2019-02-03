@@ -1,6 +1,6 @@
 {
   "name": "ridof",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Simple state manager",
   "main": "dist/index.js",
   "scripts": {
