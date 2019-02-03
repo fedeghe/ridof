@@ -1,5 +1,5 @@
 {
     "EXE": "mkdir -p test dist",
     "#source/test/*.js": "test",
-    "#source/index.js": "dist -plugins=malta-js-uglify...malta-header-comment[name:\"source/header.txt\"]"
+    "#source/index.js": "dist -plugins=malta-js-uglify[compress:true,output:{max_line_len:200}]...malta-header-comment[name:\"source/header.txt\"]"
 }
