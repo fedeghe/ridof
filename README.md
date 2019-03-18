@@ -116,3 +116,42 @@ Reset state to the initialState, clears history and subscribers
 Store.reset();
 ```
 -----
+Combine two or more reducers
+``` js
+var reducer = Ridof.combineReducers({
+    mods: (state = [], action, params) => {
+        const newState = [...state];
+        switch (action) {
+            case 'ADDMOD': newState.push(params.name); break;
+            default:;
+        }
+        return newState;
+    },
+    plugins: (state = [], action, params) => {
+        const newState = [...state];
+        switch (action) {
+            case 'ADDPLUGIN': newState.push(params.name); break;
+            default:;
+        }
+        return newState;
+    }
+});
+var store = Ridof.getStore(combined);
+store.subscribe((oldState, newState, action) => {
+    if (action === 'END') {
+        console.log(store.getState())
+        /*
+        {
+            mods: ['mymod1', 'mymod2'],
+            plugins: ['myplugin']
+        }
+        */
+    }
+});
+store.dispatch({ type: 'ADDPLUGIN', name: 'myplugin' });
+store.dispatch({ type: 'ADDMOD', name: 'mymod1' });
+store.dispatch({ type: 'ADDMOD', name: 'mymod2' });
+store.dispatch({ type: 'END' });
+```
+-----
+
