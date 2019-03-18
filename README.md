@@ -143,7 +143,7 @@ var reducer = Ridof.combineReducers({
         return newState;
     }
 });
-var store = Ridof.getStore(combined);
+var store = Ridof.getStore(reducer);
 store.subscribe((oldState, newState, action) => {
     if (action === 'END') {
         console.log(store.getState())
