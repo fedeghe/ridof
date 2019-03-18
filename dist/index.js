@@ -10,7 +10,7 @@ d88'     d88' `?88P'`88b`?8888P'd88'
                                       v. 1.0.3
 
 Date: 18/3/2019
-Size: ~3KB
+Size: ~4KB
 */
 var Ridof = (function () {
     'use strict';
@@ -30,9 +30,9 @@ var Ridof = (function () {
     }
 
     function Store (reducer, state) {
-        _validateReducer(reducer);
         this.reducer = reducer || _emptyObjFun;
         this.state = state || this.reducer();
+        _validateReducer(reducer);
         this.states = [this.state];
         this.currentIndex = 0;
         this.listeners = [];
@@ -49,12 +49,11 @@ var Ridof = (function () {
             newState = this.reducer(oldState, actionType, action),
             i;
         delete newState.type;
-        for (i in action) {
-            if (i !== 'type') {
-                newState[i] = action[i];
-            }
-        }
-
+        // for (i in action) {
+        //     if (i !== 'type') {
+        //         newState[i] = action[i];
+        //     }
+        // }
         _pushState(this, newState, actionType);
         return this;
     };
@@ -98,15 +97,21 @@ var Ridof = (function () {
         return this;
     };
 
-    function combineReducers () {
-        var reducers = [].slice.call(arguments);
-        const names = reducers.map(function (n) { return n.name; });
-        let state = {};
-        reducers.forEach(function (r) {
-            state[r.name] = r();
-        });
-        console.log(names);
-        console.log(state);
+    function combineReducers (reducers) {
+        const initState = {};
+        let reducer;
+        for (reducer in reducers) {
+            initState[reducer] = reducers[reducer]();
+        }
+        return (state = initState, action, params) => {
+            var newState = Object.assign({}, state),
+                reducer;
+            for (reducer in reducers) {
+                newState[reducer] = reducers[reducer](newState[reducer], action, params);
+            }
+            return newState;
+        };
+
     }
 
     return {
