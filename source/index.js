@@ -32,9 +32,9 @@ var Ridof = (function () {
         if (!('type' in action)) { throw new Error('Actions needs a type'); }
         var actionType = action.type,
             oldState = this.states[this.currentIndex],
-            newState = this.reducer(oldState, actionType, action),
-            i;
+            newState = this.reducer(oldState, actionType, action);
         delete newState.type;
+        // var i;
         // for (i in action) {
         //     if (i !== 'type') {
         //         newState[i] = action[i];
@@ -97,7 +97,6 @@ var Ridof = (function () {
             }
             return newState;
         };
-
     }
 
     return {

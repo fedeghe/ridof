@@ -283,7 +283,7 @@ describe('time travel', () => {
             },
             store = Ridof.getStore(reducer2);
         store.subscribe((oldState, newState, action) => {
-            assert.strictEqual(action, 'WHATEVER')
+            assert.strictEqual(action, 'WHATEVER');
             assert.strictEqual(
                 JSON.stringify(newState),
                 JSON.stringify({
