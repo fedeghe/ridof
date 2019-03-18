@@ -1,21 +1,21 @@
 var Ridof = (function () {
-    "use strict";
-    function _emptyObjFun() { return {}; }
-    function _validateReducer(r) {
+    'use strict';
+    function _emptyObjFun () { return {}; }
+    function _validateReducer (r) {
         if (typeof r() !== 'object') { throw new Error('Reducer should return an object'); }
     }
-    function _pushState(instance, newState, actionType) {
+    function _pushState (instance, newState, actionType) {
         var oldState = instance.states[instance.currentIndex];
         instance.listeners.forEach(function (sub) {
             sub(oldState, newState, actionType);
         });
-        if (instance.currentIndex < instance.states.length -1 ) {
+        if (instance.currentIndex < instance.states.length - 1) {
             instance.states = instance.states.slice(0, instance.currentIndex);
         }
         instance.states[++instance.currentIndex] = newState;
     }
 
-    function Store(reducer, state) {
+    function Store (reducer, state) {
         this.reducer = reducer || _emptyObjFun;
         this.state = state || this.reducer();
         _validateReducer(reducer);
@@ -32,15 +32,14 @@ var Ridof = (function () {
         if (!('type' in action)) { throw new Error('Actions needs a type'); }
         var actionType = action.type,
             oldState = this.states[this.currentIndex],
-            newState = this.reducer(oldState, actionType, action),
-            i;
+            newState = this.reducer(oldState, actionType, action);
         delete newState.type;
-        for (i in action) {
-            if (i !== "type") {
-                newState[i] = action[i];
-            }
-        }
-        
+        // var i;
+        // for (i in action) {
+        //     if (i !== 'type') {
+        //         newState[i] = action[i];
+        //     }
+        // }
         _pushState(this, newState, actionType);
         return this;
     };
@@ -79,12 +78,29 @@ var Ridof = (function () {
         this.currentIndex = willChange ? tmpIndex : this.currentIndex;
         //
         willChange && this.listeners.forEach(function (sub) {
-            sub(oldState, self.getState(), {type: 'TIMETRAVEL_' + versus});
+            sub(oldState, self.getState(), { type: ['TIMETRAVEL_', versus].join('') });
         });
         return this;
     };
-    
+
+    function combineReducers (reducers) {
+        const initState = {};
+        let reducer;
+        for (reducer in reducers) {
+            initState[reducer] = reducers[reducer]();
+        }
+        return (state = initState, action, params) => {
+            var newState = Object.assign({}, state),
+                reducer;
+            for (reducer in reducers) {
+                newState[reducer] = reducers[reducer](newState[reducer], action, params);
+            }
+            return newState;
+        };
+    }
+
     return {
+        combineReducers: combineReducers,
         getStore: function (reducer, initState) {
             return new Store(reducer, initState);
         },

@@ -1,7 +1,7 @@
 var assert = require('assert'),
-    Ridof = require('../dist/index.js');
+    Ridof = require('../dist/index.js'),
 
-var initState = { number: 0, valid: true },
+    initState = { number: 0, valid: true },
     reducer = function (state, action, params) {
         var newState = Object.assign({}, state);
         switch (action) {
@@ -18,125 +18,125 @@ var initState = { number: 0, valid: true },
                 newState.valid = false;
                 break;
             case 'RESET':
-                newState = Object.assign({}, initState)
+                newState = Object.assign({}, initState);
                 break;
+            default:
+                return newState;
         }
         return newState;
     };
 
 describe('basic construction', () => {
-    "use strict";
     it('should throw a TypeError if called with no params', () => {
         try {
-            Ridof.getStore()
-        } catch(e) {
-            assert.equal(e instanceof TypeError, true)
+            Ridof.getStore();
+        } catch (e) {
+            assert.strictEqual(e instanceof TypeError, true);
         }
     });
 
     it('should throw an Error if the reducer does not returns an object', () => {
         try {
-            Ridof.getStore(function () {return 1})
+            Ridof.getStore(() => 1);
         } catch (e) {
-            assert.equal(e instanceof Error, true)
+            assert.strictEqual(e instanceof Error, true);
         }
         try {
-            Ridof.getStore(function () {})
+            Ridof.getStore(() => {});
         } catch (e) {
-            assert.equal(e instanceof Error, true)
+            assert.strictEqual(e instanceof Error, true);
         }
         try {
-            Ridof.getStore(function () { return null;})
+            Ridof.getStore(() => null);
         } catch (e) {
-            assert.equal(e instanceof Error, true)
+            assert.strictEqual(e instanceof Error, true);
         }
     });
 
     it('should return a store, with empty initial state', () => {
-        var store = Ridof.getStore(function () { return {} })
-        assert.equal(JSON.stringify(store.getState()), JSON.stringify({}));
-        assert.equal(Ridof.isStore(store), true);
+        var store = Ridof.getStore(() => ({}));
+        assert.strictEqual(JSON.stringify(store.getState()), JSON.stringify({}));
+        assert.strictEqual(Ridof.isStore(store), true);
     });
 
     it('should return a store, with non empty initial state', () => {
-        var iniState = { name: 'ridof', number: 30 };
-        var store = Ridof.getStore(function () { return iniState })
-        assert.equal(JSON.stringify(store.getState()), JSON.stringify(iniState));
-        assert.equal(Ridof.isStore(store), true);
+        var iniState = { name: 'ridof', number: 30 },
+            store = Ridof.getStore(() => iniState);
+        assert.strictEqual(
+            JSON.stringify(store.getState()),
+            JSON.stringify(iniState)
+        );
+        assert.strictEqual(Ridof.isStore(store), true);
     });
 });
 
 describe('basic actions', () => {
-    "use strict";
     var store;
     before(() => {
         store = Ridof.getStore(reducer, initState);
     });
-       
     it('dispatch increment and check the state', () => {
         var unsub = store.subscribe((oldState, newState, action) => {
-            assert.equal(newState.number, 1);
-            assert.equal(action, 'INCREMENT');
+            assert.strictEqual(newState.number, 1);
+            assert.strictEqual(action, 'INCREMENT');
             unsub();
-        })
-        store.dispatch({type: 'INCREMENT'})
+        });
+        store.dispatch({ type: 'INCREMENT' });
     });
 
     it('dispatch decrement action and check the state', () => {
         var unsub = store.subscribe((oldState, newState, action) => {
-            assert.equal(newState.number, 0);
-            assert.equal(action, 'DECREMENT');
-            unsub()
-        })
-        store.dispatch({ type: 'DECREMENT' })
+            assert.strictEqual(newState.number, 0);
+            assert.strictEqual(action, 'DECREMENT');
+            unsub();
+        });
+        store.dispatch({ type: 'DECREMENT' });
     });
 
     it('throws an error if dispatch a non action', (done) => {
-        try{
-            store.dispatch({ typezzz: 'DECREMENT' })
+        try {
+            store.dispatch({ typezzz: 'DECREMENT' });
             store.reset();
-        } catch(e) {
-            done()
+        } catch (e) {
+            done();
         }
     });
 
     it('all subscribers are noticed', () => {
         var count = 3;
-        var unsubs = [
-            store.subscribe((oldState, newState, action) => {
-                count *= 5;
-            }),
-            store.subscribe((oldState, newState, action) => {
-                count *= 7;
-            }),
-            store.subscribe((oldState, newState, action) => {
-                count *= 9;
-            })
-        ];
-        store.dispatch({ type: 'RESET' })
-        
-        assert.equal(count, 945)
-
+        store.subscribe((oldState, newState, action) => {
+            count *= 5;
+        });
+        store.subscribe((oldState, newState, action) => {
+            count *= 7;
+        });
+        store.subscribe((oldState, newState, action) => {
+            count *= 9;
+        });
+        store.dispatch({ type: 'RESET' });
+        assert.strictEqual(count, 945);
         store.reset();
     });
 
     it('should store and retrieve all states', () => {
-        store.dispatch({ type: 'INCREMENT' })
-        store.dispatch({ type: 'INCREMENT' })
-        store.dispatch({ type: 'INCREMENT' })
-        store.dispatch({ type: 'INVALIDATE' })
-        store.dispatch({ type: 'INCREMENT' })
+        store.dispatch({ type: 'INCREMENT' });
+        store.dispatch({ type: 'INCREMENT' });
+        store.dispatch({ type: 'INCREMENT' });
+        store.dispatch({ type: 'INVALIDATE' });
+        store.dispatch({ type: 'INCREMENT' });
         store.dispatch({ type: 'DECREMENT' });
         var states = store.states,
-            expected = { number: 3, valid: false }
+            expected = { number: 3, valid: false };
 
-        assert.equal(JSON.stringify(store.getState()), JSON.stringify(expected))
-        assert.equal(states.length, 7)
+        assert.strictEqual(
+            JSON.stringify(store.getState()),
+            JSON.stringify(expected)
+        );
+        assert.strictEqual(states.length, 7);
     });
 });
 
 describe('time travel', () => {
-    "use strict";
     var store;
     before(() => {
         store = Ridof.getStore(reducer, initState);
@@ -145,28 +145,28 @@ describe('time travel', () => {
         var count = 0;
         store.subscribe(() => {
             count++;
-        })
+        });
 
         // {number: 0, valid: true} >>>>>>>>>>> -6
-        store.dispatch({ type: 'INCREMENT' })
+        store.dispatch({ type: 'INCREMENT' });
         // {number: 1, valid: true} >>>>>>>>>>> -5
-        store.dispatch({ type: 'INCREMENT' })
+        store.dispatch({ type: 'INCREMENT' });
         // {number: 2, valid: true} >>>>>>>>>>> -4
-        store.dispatch({ type: 'INCREMENT' })
+        store.dispatch({ type: 'INCREMENT' });
         // {number: 3, valid: true} >>>>>>>>>>> -3
-        store.dispatch({ type: 'INVALIDATE' })
+        store.dispatch({ type: 'INVALIDATE' });
         // {number: 3, valid: false} >>>>>>>>>>> -2
-        store.dispatch({ type: 'INCREMENT' })
+        store.dispatch({ type: 'INCREMENT' });
         // {number: 4, valid: false} >>>>>>>>>>> -1
         store.dispatch({ type: 'DECREMENT' });
         // {number: 3, valid: false}
 
-        assert.equal(JSON.stringify(store.getState()), JSON.stringify({ number: 3, valid: false }))
+        assert.strictEqual(JSON.stringify(store.getState()), JSON.stringify({ number: 3, valid: false }));
         store.move(-3);
-        assert.equal(JSON.stringify(store.getState()), JSON.stringify({number: 3, valid:true}))
+        assert.strictEqual(JSON.stringify(store.getState()), JSON.stringify({ number: 3, valid: true }));
         store.move(2);
-        assert.equal(JSON.stringify(store.getState()), JSON.stringify({ number: 4, valid: false }))
-        assert.equal(count, 8)
+        assert.strictEqual(JSON.stringify(store.getState()), JSON.stringify({ number: 4, valid: false }));
+        assert.strictEqual(count, 8);// 6 + 2 moves
         store.reset();
     });
     it('should slice the forward states when dispatch in the middle', () => {
@@ -176,30 +176,39 @@ describe('time travel', () => {
         });
 
         // {number: 0, valid: true} >>>>>>>>>>> -6
-        store.dispatch({ type: 'INCREMENT' })
+        store.dispatch({ type: 'INCREMENT' });
         // {number: 1, valid: true} >>>>>>>>>>> -5
-        store.dispatch({ type: 'INCREMENT' })
+        store.dispatch({ type: 'INCREMENT' });
         // {number: 2, valid: true} >>>>>>>>>>> -4
-        store.dispatch({ type: 'INCREMENT' })
+        store.dispatch({ type: 'INCREMENT' });
         // {number: 3, valid: true} >>>>>>>>>>> -3
-        store.dispatch({ type: 'INVALIDATE' })
+        store.dispatch({ type: 'INVALIDATE' });
         // {number: 3, valid: false} >>>>>>>>>>> -2
-        store.dispatch({ type: 'INCREMENT' })
+        store.dispatch({ type: 'INCREMENT' });
         // {number: 4, valid: false} >>>>>>>>>>> -1
         store.dispatch({ type: 'DECREMENT' });
         // {number: 3, valid: false}
 
-        assert.equal(JSON.stringify(store.getState()), JSON.stringify({ number: 3, valid: false }))
+        assert.strictEqual(
+            JSON.stringify(store.getState()),
+            JSON.stringify({ number: 3, valid: false })
+        );
         store.move(-4);
-        assert.equal(JSON.stringify(store.getState()), JSON.stringify({ number: 2, valid: true }))
-        assert.equal(store.states.length, 7)
+        assert.strictEqual(
+            JSON.stringify(store.getState()),
+            JSON.stringify({ number: 2, valid: true })
+        );
+        assert.strictEqual(store.states.length, 7);
 
         // now we are in the middle and if an action is dispatched should destroy all forward history
-        store.dispatch({ type: 'DECREMENT' })
-        assert.equal(JSON.stringify(store.getState()), JSON.stringify({ number: 1, valid: true }))
-        assert.equal(store.states.length, 4)
+        store.dispatch({ type: 'DECREMENT' });
+        assert.strictEqual(
+            JSON.stringify(store.getState()),
+            JSON.stringify({ number: 1, valid: true })
+        );
+        assert.strictEqual(store.states.length, 4);
 
-        assert.equal(count, 8)
+        assert.strictEqual(count, 8);// 7 + 1 move
         store.reset();
     });
     it('should not move too far', () => {
@@ -209,61 +218,62 @@ describe('time travel', () => {
         });
 
         // {number: 0, valid: true} >>>>>>>>>>> -6
-        store.dispatch({ type: 'INCREMENT' })
+        store.dispatch({ type: 'INCREMENT' });
         // {number: 1, valid: true} >>>>>>>>>>> -5
-        store.dispatch({ type: 'INCREMENT' })
+        store.dispatch({ type: 'INCREMENT' });
         // {number: 2, valid: true} >>>>>>>>>>> -4
-        store.dispatch({ type: 'INCREMENT' })
+        store.dispatch({ type: 'INCREMENT' });
         // {number: 3, valid: true} >>>>>>>>>>> -3
-        store.dispatch({ type: 'INVALIDATE' })
+        store.dispatch({ type: 'INVALIDATE' });
         // {number: 3, valid: false} >>>>>>>>>>> -2
-        store.dispatch({ type: 'INCREMENT' })
+        store.dispatch({ type: 'INCREMENT' });
         // {number: 4, valid: false} >>>>>>>>>>> -1
         store.dispatch({ type: 'DECREMENT' });
         // {number: 3, valid: false}
 
-        assert.equal(JSON.stringify(store.getState()), JSON.stringify({ number: 3, valid: false }))
+        assert.strictEqual(JSON.stringify(store.getState()), JSON.stringify({ number: 3, valid: false }));
         store.move(-7);
-        assert.equal(JSON.stringify(store.getState()), JSON.stringify({ number: 3, valid: false }))
-        assert.equal(store.states.length, 7)
+        assert.strictEqual(JSON.stringify(store.getState()), JSON.stringify({ number: 3, valid: false }));
+        assert.strictEqual(store.states.length, 7);
+        assert.strictEqual(count, 6);// the move fails => dont count
         store.reset();
     });
     it('should not move too narrow', () => {
         var count = 0;
         store.subscribe(() => {
             count++;
-        })
+        });
 
         // {number: 0, valid: true} >>>>>>>>>>> -6
-        store.dispatch({ type: 'INCREMENT' })
+        store.dispatch({ type: 'INCREMENT' });
         // {number: 1, valid: true} >>>>>>>>>>> -5
-        store.dispatch({ type: 'INCREMENT' })
+        store.dispatch({ type: 'INCREMENT' });
         // {number: 2, valid: true} >>>>>>>>>>> -4
-        store.dispatch({ type: 'INCREMENT' })
+        store.dispatch({ type: 'INCREMENT' });
         // {number: 3, valid: true} >>>>>>>>>>> -3
-        store.dispatch({ type: 'INVALIDATE' })
+        store.dispatch({ type: 'INVALIDATE' });
         // {number: 3, valid: false} >>>>>>>>>>> -2
-        store.dispatch({ type: 'INCREMENT' })
+        store.dispatch({ type: 'INCREMENT' });
         // {number: 4, valid: false} >>>>>>>>>>> -1
         store.dispatch({ type: 'DECREMENT' });
         // {number: 3, valid: false}
 
-        assert.equal(JSON.stringify(store.getState()), JSON.stringify({ number: 3, valid: false }))
+        assert.strictEqual(JSON.stringify(store.getState()), JSON.stringify({ number: 3, valid: false }));
         store.move(1); // not effective
-        assert.equal(JSON.stringify(store.getState()), JSON.stringify({ number: 3, valid: false }))
+        assert.strictEqual(JSON.stringify(store.getState()), JSON.stringify({ number: 3, valid: false }));
         // we should go backward
         store.move(-3);
-        assert.equal(JSON.stringify(store.getState()), JSON.stringify({ number: 3, valid: true }))
+        assert.strictEqual(JSON.stringify(store.getState()), JSON.stringify({ number: 3, valid: true }));
 
-        //and check again that we fail to go too forward
-        assert.equal(count, 7)
+        // and check again that we fail to go too forward
+        assert.strictEqual(count, 7);
         store.move(4); // in fact is not effective
-        assert.equal(store.states.length, 7)
-        assert.equal(count, 7)
+        assert.strictEqual(store.states.length, 7);
+        assert.strictEqual(count, 7);
 
-        //also .. move 0 is uneffective
+        // also .. move 0 is uneffective
         store.move(0);
-        assert.equal(count, 7);
+        assert.strictEqual(count, 7);
     });
 
     it('should replace the reducer', () => {
@@ -273,12 +283,15 @@ describe('time travel', () => {
             },
             store = Ridof.getStore(reducer2);
         store.subscribe((oldState, newState, action) => {
-            assert.equal(action, 'WHATEVER')
-            assert.equal(JSON.stringify(newState), JSON.stringify({
-                all: 'others',
-                parameters: 'are included',
-                number: 9
-            }))
+            assert.strictEqual(action, 'WHATEVER');
+            assert.strictEqual(
+                JSON.stringify(newState),
+                JSON.stringify({
+                    all: 'others',
+                    parameters: 'are included',
+                    number: 9
+                })
+            );
         });
         store.dispatch({
             type: 'WHATEVER',
@@ -286,19 +299,22 @@ describe('time travel', () => {
             parameters: 'are included',
             number: 9
         });
-        store.reset(); //for listeners
+        store.reset();// for listeners
         store.subscribe((oldState, newState, action) => {
-            assert.equal(JSON.stringify(oldState), JSON.stringify({}))
-            assert.equal(JSON.stringify(newState), JSON.stringify({ name: 'static' }))
+            assert.strictEqual(
+                JSON.stringify(oldState),
+                JSON.stringify({})
+            );
+            assert.strictEqual(
+                JSON.stringify(newState),
+                JSON.stringify({ name: 'static' })
+            );
         });
-        store.replaceReducer(() => {
-            return { name: 'static'};
-        });
+        store.replaceReducer(() => ({ name: 'static' }));
         store.dispatch({
             type: 'NOT REALLY MATTER'
         });
     });
-
 });
 
 
@@ -310,12 +326,15 @@ describe('mod on the state', () => {
             },
             store = Ridof.getStore(reducer2);
         store.subscribe((oldState, newState, action) => {
-            assert.equal(action, 'WHATEVER')
-            assert.equal(JSON.stringify(newState), JSON.stringify({
-                all: 'others',
-                parameters: 'are included',
-                number: 9
-            }))
+            assert.strictEqual(action, 'WHATEVER');
+            assert.strictEqual(
+                JSON.stringify(newState),
+                JSON.stringify({
+                    all: 'others',
+                    parameters: 'are included',
+                    number: 9
+                })
+            );
         });
         store.dispatch({
             type: 'WHATEVER',
