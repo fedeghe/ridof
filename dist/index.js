@@ -9,15 +9,115 @@ d88'     d88' `?88P'`88b`?8888P'd88'
 
                                       v. 1.0.3
 
-Date: 3/2/2019
-Size: ~1KB
+Date: 18/3/2019
+Size: ~3KB
 */
-var Ridof=function(){"use strict";function t(){return{}}function e(t){if("object"!=typeof t())throw new Error("Reducer should return an object")}function r(t,e,r){var s=t.states[t.currentIndex]
-;t.listeners.forEach(function(t){t(s,e,r)}),t.currentIndex<t.states.length-1&&(t.states=t.states.slice(0,t.currentIndex)),t.states[++t.currentIndex]=e}function s(r,s){this.reducer=r||t,
-this.state=s||this.reducer(),e(r),this.states=[this.state],this.currentIndex=0,this.listeners=[]}return s.prototype.getState=function(){return this.states[this.currentIndex]},
-s.prototype.dispatch=function(t){if(!("type"in t))throw new Error("Actions needs a type");var e,s=t.type,n=this.states[this.currentIndex],i=this.reducer(n,s,t);delete i.type
-;for(e in t)"type"!==e&&(i[e]=t[e]);return r(this,i,s),this},s.prototype.subscribe=function(t){var e,r=this;return this.listeners.push(t),e=this.listeners.length-1,function(){
-r.listeners=r.listeners.slice(0,e).concat(r.listeners.slice(e+1))}},s.prototype.replaceReducer=function(t){e(t),this.reducer=t},s.prototype.reset=function(){var t=this.states[0];this.states=[t],
-this.currentIndex=0,this.listeners=[]},s.prototype.move=function(t){if(0===t)return this;var e=this,r=this.currentIndex+t,s=this.getState(),n=t>0?"FORWARD":"BACKWARD",i=r>-1&&r<this.states.length
-;return this.currentIndex=i?r:this.currentIndex,i&&this.listeners.forEach(function(t){t(s,e.getState(),{type:"TIMETRAVEL_"+n})}),this},{getStore:function(t,e){return new s(t,e)},isStore:function(t){
-return t instanceof s}}}();"object"==typeof exports&&(module.exports=Ridof);
+var Ridof = (function () {
+    'use strict';
+    function _emptyObjFun () { return {}; }
+    function _validateReducer (r) {
+        if (typeof r() !== 'object') { throw new Error('Reducer should return an object'); }
+    }
+    function _pushState (instance, newState, actionType) {
+        var oldState = instance.states[instance.currentIndex];
+        instance.listeners.forEach(function (sub) {
+            sub(oldState, newState, actionType);
+        });
+        if (instance.currentIndex < instance.states.length - 1) {
+            instance.states = instance.states.slice(0, instance.currentIndex);
+        }
+        instance.states[++instance.currentIndex] = newState;
+    }
+
+    function Store (reducer, state) {
+        _validateReducer(reducer);
+        this.reducer = reducer || _emptyObjFun;
+        this.state = state || this.reducer();
+        this.states = [this.state];
+        this.currentIndex = 0;
+        this.listeners = [];
+    }
+
+    Store.prototype.getState = function () {
+        return this.states[this.currentIndex];
+    };
+
+    Store.prototype.dispatch = function (action) {
+        if (!('type' in action)) { throw new Error('Actions needs a type'); }
+        var actionType = action.type,
+            oldState = this.states[this.currentIndex],
+            newState = this.reducer(oldState, actionType, action),
+            i;
+        delete newState.type;
+        for (i in action) {
+            if (i !== 'type') {
+                newState[i] = action[i];
+            }
+        }
+
+        _pushState(this, newState, actionType);
+        return this;
+    };
+
+    Store.prototype.subscribe = function (s) {
+        var self = this,
+            p;
+        this.listeners.push(s);
+        p = this.listeners.length - 1;
+        //
+        // return the unsubcriber
+        return function () {
+            self.listeners = self.listeners.slice(0, p).concat(self.listeners.slice(p + 1));
+        };
+    };
+
+    Store.prototype.replaceReducer = function (reducer) {
+        _validateReducer(reducer);
+        this.reducer = reducer;
+    };
+
+    Store.prototype.reset = function () {
+        var s0 = this.states[0];
+        this.states = [s0];
+        this.currentIndex = 0;
+        this.listeners = [];
+    };
+
+    Store.prototype.move = function (to) {
+        if (to === 0) return this;
+        var self = this,
+            tmpIndex = this.currentIndex + to,
+            oldState = this.getState(),
+            versus = to > 0 ? 'FORWARD' : 'BACKWARD',
+            willChange = tmpIndex > -1 && tmpIndex < this.states.length;
+        this.currentIndex = willChange ? tmpIndex : this.currentIndex;
+        //
+        willChange && this.listeners.forEach(function (sub) {
+            sub(oldState, self.getState(), { type: ['TIMETRAVEL_', versus].join('') });
+        });
+        return this;
+    };
+
+    function combineReducers () {
+        var reducers = [].slice.call(arguments);
+        const names = reducers.map(function (n) { return n.name; });
+        let state = {};
+        reducers.forEach(function (r) {
+            state[r.name] = r();
+        });
+        console.log(names);
+        console.log(state);
+    }
+
+    return {
+        combineReducers: combineReducers,
+        getStore: function (reducer, initState) {
+            return new Store(reducer, initState);
+        },
+        isStore: function (s) {
+            return s instanceof Store;
+        }
+    };
+})();
+
+(typeof exports === 'object') && (module.exports = Ridof);

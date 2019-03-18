@@ -1,24 +1,24 @@
 var Ridof = (function () {
-    "use strict";
-    function _emptyObjFun() { return {}; }
-    function _validateReducer(r) {
+    'use strict';
+    function _emptyObjFun () { return {}; }
+    function _validateReducer (r) {
         if (typeof r() !== 'object') { throw new Error('Reducer should return an object'); }
     }
-    function _pushState(instance, newState, actionType) {
+    function _pushState (instance, newState, actionType) {
         var oldState = instance.states[instance.currentIndex];
         instance.listeners.forEach(function (sub) {
             sub(oldState, newState, actionType);
         });
-        if (instance.currentIndex < instance.states.length -1 ) {
+        if (instance.currentIndex < instance.states.length - 1) {
             instance.states = instance.states.slice(0, instance.currentIndex);
         }
         instance.states[++instance.currentIndex] = newState;
     }
 
-    function Store(reducer, state) {
+    function Store (reducer, state) {
+        _validateReducer(reducer);
         this.reducer = reducer || _emptyObjFun;
         this.state = state || this.reducer();
-        _validateReducer(reducer);
         this.states = [this.state];
         this.currentIndex = 0;
         this.listeners = [];
@@ -36,11 +36,11 @@ var Ridof = (function () {
             i;
         delete newState.type;
         for (i in action) {
-            if (i !== "type") {
+            if (i !== 'type') {
                 newState[i] = action[i];
             }
         }
-        
+
         _pushState(this, newState, actionType);
         return this;
     };
@@ -79,12 +79,24 @@ var Ridof = (function () {
         this.currentIndex = willChange ? tmpIndex : this.currentIndex;
         //
         willChange && this.listeners.forEach(function (sub) {
-            sub(oldState, self.getState(), {type: 'TIMETRAVEL_' + versus});
+            sub(oldState, self.getState(), { type: ['TIMETRAVEL_', versus].join('') });
         });
         return this;
     };
-    
+
+    function combineReducers () {
+        var reducers = [].slice.call(arguments);
+        const names = reducers.map(function (n) { return n.name; });
+        let state = {};
+        reducers.forEach(function (r) {
+            state[r.name] = r();
+        });
+        console.log(names);
+        console.log(state);
+    }
+
     return {
+        combineReducers: combineReducers,
         getStore: function (reducer, initState) {
             return new Store(reducer, initState);
         },
