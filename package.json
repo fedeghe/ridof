@@ -9,7 +9,8 @@
     "clean": "malta source/clean.json",
     "test": "mocha",
     "cover": "istanbul cover _mocha",
-    "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls"
+    "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls",
+    "prepublishOnly": "npm i && malta source/buildtr.json"
   },
   "repository": {
     "type": "git",
