@@ -3,7 +3,7 @@
 
 # Ridof
 
-Simple state manager
+Simple isomorphic state manager
 
 
 ## install it
@@ -11,6 +11,8 @@ Simple state manager
     > npm i ridof
 
 ## use it
+
+Load the `dist/index.js` script and then...
 
 Create a store
 ``` js

@@ -1,7 +1,7 @@
 {
   "name": "ridof",
   "version": "1.1.0",
-  "description": "Simple state manager",
+  "description": "Simple isomorphic state manager",
   "main": "dist/index.js",
   "scripts": {
     "build": "malta source/buildtr.json",
