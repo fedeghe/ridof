@@ -5,12 +5,17 @@
 
 Simple isomorphic state manager
 
+## Install it
 
-## install it
+    @ npm i ridof
 
-    > npm i ridof
+## Run the tests coverage
 
-## use it
+From the `node_modules/ridof` folder run
+
+    @ npm i && npm run cover
+
+## Use it
 
 Load the `dist/index.js` script and then...
 

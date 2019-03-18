@@ -85,11 +85,12 @@ var Ridof = (function () {
 
     function combineReducers (reducers) {
         const initState = {};
-        let reducer;
-        for (reducer in reducers) {
-            initState[reducer] = reducers[reducer]();
+        var red;
+        for (red in reducers) {
+            initState[red] = reducers[red]();
         }
-        return (state = initState, action, params) => {
+        return function (state, action, params) {
+            state = state || initState;
             var newState = Object.assign({}, state),
                 reducer;
             for (reducer in reducers) {
