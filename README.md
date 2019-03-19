@@ -125,7 +125,7 @@ Store.reset();
 -----
 Combine two or more reducers
 ``` js
-var reducer = Ridof.combineReducers({
+var reducer = Ridof.combine({
     mods: (state = [], action, params) => {
         const newState = [...state];
         switch (action) {

@@ -1,8 +1,19 @@
 var Ridof = (function () {
     'use strict';
+    const ERRORS = {
+        REDUCERS_FUCTION: '[ERROR] Reducer must be a function!',
+        REDUCERS_RETURN: '[ERROR] Reducer should return something!',
+        SUBSCRIBERS_FUNCTION: '[ERROR] Subscribers must be a functions!',
+        ACTION_TYPE: '[ERROR] Actions needs a type'
+    };
+
     function _emptyObjFun () { return {}; }
-    function _validateReducer (r) {
-        if (typeof r() !== 'object') { throw new Error('Reducer should return an object'); }
+
+    function _isFunction (o, msg) {
+        if (typeof o !== 'function') { throw new Error(msg); }
+    }
+    function _isDefined (o, msg) {
+        if (typeof o === 'undefined') { throw new Error(msg); }
     }
     function _pushState (instance, newState, actionType) {
         var oldState = instance.states[instance.currentIndex];
@@ -16,9 +27,9 @@ var Ridof = (function () {
     }
 
     function Store (reducer, state) {
-        this.reducer = reducer || _emptyObjFun;
-        this.state = state || this.reducer();
-        _validateReducer(reducer);
+        this.reducer = reducer || _emptyObjFun();
+        _isFunction(reducer, ERRORS.REDUCERS_FUCTION);
+        this.state = typeof state !== 'undefined' ? state : this.reducer();
         this.states = [this.state];
         this.currentIndex = 0;
         this.listeners = [];
@@ -29,25 +40,21 @@ var Ridof = (function () {
     };
 
     Store.prototype.dispatch = function (action) {
-        if (!('type' in action)) { throw new Error('Actions needs a type'); }
+        if (!('type' in action)) { throw new Error(ERRORS.ACTION_TYPE); }
         var actionType = action.type,
             oldState = this.states[this.currentIndex],
             newState = this.reducer(oldState, actionType, action);
+        _isDefined(newState, ERRORS.REDUCERS_RETURN);
         delete newState.type;
-        // var i;
-        // for (i in action) {
-        //     if (i !== 'type') {
-        //         newState[i] = action[i];
-        //     }
-        // }
         _pushState(this, newState, actionType);
         return this;
     };
 
-    Store.prototype.subscribe = function (s) {
+    Store.prototype.subscribe = function (subscriber) {
+        _isFunction(subscriber, ERRORS.SUBSCRIBERS_FUNCTION);
         var self = this,
             p;
-        this.listeners.push(s);
+        this.listeners.push(subscriber);
         p = this.listeners.length - 1;
         //
         // return the unsubcriber
@@ -57,7 +64,7 @@ var Ridof = (function () {
     };
 
     Store.prototype.replaceReducer = function (reducer) {
-        _validateReducer(reducer);
+        _isFunction(reducer, ERRORS.REDUCERS_FUCTION);
         this.reducer = reducer;
     };
 
@@ -83,7 +90,7 @@ var Ridof = (function () {
         return this;
     };
 
-    function combineReducers (reducers) {
+    function combine (reducers) {
         const initState = {};
         var red;
         for (red in reducers) {
@@ -101,13 +108,14 @@ var Ridof = (function () {
     }
 
     return {
-        combineReducers: combineReducers,
+        combine: combine,
         getStore: function (reducer, initState) {
             return new Store(reducer, initState);
         },
         isStore: function (s) {
             return s instanceof Store;
-        }
+        },
+        ERRORS: ERRORS
     };
 })();
 
