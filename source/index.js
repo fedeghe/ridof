@@ -39,13 +39,21 @@ var Ridof = (function () {
         return this.states[this.currentIndex];
     };
 
-    Store.prototype.dispatch = function (action) {
+    Store.prototype.dispatch = function (action, add) {
         if (!('type' in action)) { throw new Error(ERRORS.ACTION_TYPE); }
         var actionType = action.type,
             oldState = this.states[this.currentIndex],
-            newState = this.reducer(oldState, actionType, action);
+            newState = this.reducer(oldState, actionType, action),
+            i;
         _isDefined(newState, ERRORS.REDUCERS_RETURN);
         delete newState.type;
+        if (add) {
+            for (i in action) {
+                if (i !== 'type' && !(i in newState)) {
+                    newState[i] = action[i];
+                }
+            }
+        }
         _pushState(this, newState, actionType);
         return this;
     };

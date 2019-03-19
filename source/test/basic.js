@@ -101,29 +101,37 @@ describe('basic actions', () => {
     });
 });
 
-// describe('mod on the state', () => {
-//     it('fill the state lately', () => {
-//         var reducer2 = function (oldState, action, params) {
-//                 // who cares here
-//                 return Object.assign({}, params);
-//             },
-//             store = Ridof.getStore(reducer2);
-//         store.subscribe((oldState, newState, action) => {
-//             assert.strictEqual(action, 'WHATEVER');
-//             assert.strictEqual(
-//                 JSON.stringify(newState),
-//                 JSON.stringify({
-//                     all: 'others',
-//                     parameters: 'are included',
-//                     number: 9
-//                 })
-//             );
-//         });
-//         store.dispatch({
-//             type: 'WHATEVER',
-//             all: 'others',
-//             parameters: 'are included',
-//             number: 9
-//         });
-//     });
-// });
+describe('should add to the state ', () => {
+    it('fill the state lately', () => {
+        var reducer2 = function (oldState, action, params) {
+                const newState = Object.assign({}, oldState);
+                switch (action) {
+                    case 'ADD':
+                        newState.number += 10;
+                        break;
+                    default:;
+                }
+                return newState;
+            },
+            store = Ridof.getStore(reducer2, initState);
+        store.subscribe((oldState, newState, action) => {
+            assert.strictEqual(action, 'ADD');
+            assert.strictEqual(
+                JSON.stringify(newState),
+                JSON.stringify({
+                    number: 10,
+                    valid: true,
+                    all: 'others',
+                    parameters: 'are included'
+                })
+            );
+        });
+        store.dispatch({
+            type: 'ADD',
+            number: 9,
+            valid: true,
+            all: 'others',
+            parameters: 'are included'
+        }, true);
+    });
+});

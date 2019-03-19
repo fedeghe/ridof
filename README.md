@@ -105,6 +105,16 @@ Store.dispatch({
     params: 'follows'
 });
 ```
+a second `Boolean` parameter is accepted by the `dispatch`; when `true` it allows to add (after reducer action on the state) the parameters passed that are missing on the state:
+``` js
+// { num: 0 }
+Store.dispatch({
+    type:'INCREMENT', // this action only increments `num`
+    all: 'others',
+    params: 'follows'
+}, true); // it is passed so missing ones will be added
+// { num: 0, all: 'others', params: 'follows'}
+```
 -----
 Move in the states:
 ``` js
