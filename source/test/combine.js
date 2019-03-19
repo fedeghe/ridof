@@ -4,7 +4,7 @@ var assert = require('assert'),
 
 describe('combine some reducers', () => {
     it('will combine two', () => {
-        const combined = Ridof.combineReducers({
+        const combined = Ridof.combine({
                 mods: (state = [], action, params) => {
                     const newState = [...state];
                     switch (action) {
