@@ -80,7 +80,7 @@ const Store = Ridof.getStore(reducer, [initialStatus || {}]);
 the reducer function will receive the following:
 - **state**: the current state
 - **action**: the action label
-- **params**: all passed to disatch but the type 
+- **params**: all passed to ‘dispatch’ but the type 
 
 Return the current state  
 ``` js
