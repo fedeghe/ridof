@@ -7,9 +7,8 @@
  d88      d88 88b  ,88b 88b  d88 d88
 d88'     d88' `?88P'`88b`?8888P'd88'
 
-                                      v. 1.1.4
+                                      v. 1.1.5
 
-Date: 7/6/2019
 Size: ~2KB
 */
 var Ridof=function(){"use strict";function t(){return{}}function e(t,e){if("function"!=typeof t)throw new Error(e)}function n(t,e){if(void 0===t)throw new Error(e)}function r(t,e,n){
