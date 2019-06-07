@@ -1,0 +1,1 @@
+{"uuid":"f44e2399-6c33-455c-afe8-7001df3983bc","parent":null,"pid":3712,"argv":["/usr/local/bin/node","/usr/local/bin/npm","test"],"execArgv":[],"cwd":"/Users/federicoghedina/node/ridof","time":1559944020822,"root":"f437cd4e-20a2-4bae-ad95-e61bff141ce4","coverageFilename":"/Users/federicoghedina/node/ridof/.nyc_output/f44e2399-6c33-455c-afe8-7001df3983bc.json","files":[]}

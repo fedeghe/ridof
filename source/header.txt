@@ -8,5 +8,4 @@ d88'     d88' `?88P'`88b`?8888P'd88'
 
                                       v. $PACKAGE.version$
 
-Date: __DATE__
 Size: __SIZE__
