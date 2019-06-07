@@ -72,7 +72,6 @@ Suppose the state history is `[s0, s1, ... si, ... sn]` where sn is the current 
 
 ## Store functions
 
-
 Creates a store given one reducer function 
 ``` js
 const Store = Ridof.getStore(reducer, [initialStatus || {}]);
