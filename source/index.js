@@ -7,7 +7,7 @@ var Ridof = (function () {
         ACTION_TYPE: '[ERROR] Actions needs a type'
     };
 
-    function _emptyObjFun () { return {}; }
+    function _emptyObjFun () { return function (a, s) { return s; }; }
 
     function _isFunction (o, msg) {
         if (typeof o !== 'function') { throw new Error(msg); }

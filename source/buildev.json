@@ -1,5 +1,5 @@
 {
     "EXE": "mkdir -p test dist",
-    "source/test/*.js": "test -plugins=malta-mocha",
+    "source/test/basic.js": "test -plugins=malta-mocha",
     "source/index.js": "dist -plugins=malta-header-comment[name:\"source/header.txt\"]"
 }

@@ -11,7 +11,7 @@ d88'     d88' `?88P'`88b`?8888P'd88'
 
 Size: ~2KB
 */
-var Ridof=function(){"use strict";function t(){return{}}function e(t,e){if("function"!=typeof t)throw new Error(e)}function n(t,e){if(void 0===t)throw new Error(e)}function r(t,e,n){
+var Ridof=function(){"use strict";function t(){return function(){}}function e(t,e){if("function"!=typeof t)throw new Error(e)}function n(t,e){if(void 0===t)throw new Error(e)}function r(t,e,n){
 var r=t.states[t.currentIndex];t.listeners.forEach(function(t){t(r,e,n)}),t.currentIndex<t.states.length-1&&(t.states=t.states.slice(0,t.currentIndex)),t.states[++t.currentIndex]=e}function s(n,r){
 this.reducer=n||t(),e(n,o.REDUCERS_FUCTION),this.state=void 0!==r?r:this.reducer(),this.states=[this.state],this.currentIndex=0,this.listeners=[]}function i(t){const e={};var n;for(n in t)e[n]=t[n]()
 ;return function(n,r,s){n=n||e;var i,o=Object.assign({},n);for(i in t)o[i]=t[i](o[i],r,s);return o}}const o={REDUCERS_FUCTION:"[ERROR] Reducer must be a function!",
