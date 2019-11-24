@@ -7,14 +7,14 @@
  d88      d88 88b  ,88b 88b  d88 d88
 d88'     d88' `?88P'`88b`?8888P'd88'
 
-                                      v. 1.1.6
+                                      v. 1.1.7
 
 Size: ~2KB
 */
-var Ridof=function(){"use strict";function t(){return function(){}}function e(t,e){if("function"!=typeof t)throw new Error(e)}function n(t,e){if(void 0===t)throw new Error(e)}function r(t,e,n){
-var r=t.states[t.currentIndex];t.listeners.forEach(function(t){t(r,e,n)}),t.currentIndex<t.states.length-1&&(t.states=t.states.slice(0,t.currentIndex)),t.states[++t.currentIndex]=e}function s(n,r){
-this.reducer=n||t(),e(n,o.REDUCERS_FUCTION),this.state=void 0!==r?r:this.reducer(),this.states=[this.state],this.currentIndex=0,this.listeners=[]}function i(t){const e={};var n;for(n in t)e[n]=t[n]()
-;return function(n,r,s){n=n||e;var i,o=Object.assign({},n);for(i in t)o[i]=t[i](o[i],r,s);return o}}const o={REDUCERS_FUCTION:"[ERROR] Reducer must be a function!",
+var Ridof=function(){"use strict";function t(){return function(t,e){return e}}function e(t,e){if("function"!=typeof t)throw new Error(e)}function n(t,e){if(void 0===t)throw new Error(e)}
+function r(t,e,n){var r=t.states[t.currentIndex];t.listeners.forEach(function(t){t(r,e,n)}),t.currentIndex<t.states.length-1&&(t.states=t.states.slice(0,t.currentIndex)),t.states[++t.currentIndex]=e}
+function s(n,r){this.reducer=n||t(),e(n,o.REDUCERS_FUCTION),this.state=void 0!==r?r:this.reducer(),this.states=[this.state],this.currentIndex=0,this.listeners=[]}function i(t){const e={};var n
+;for(n in t)e[n]=t[n]();return function(n,r,s){n=n||e;var i,o=Object.assign({},n);for(i in t)o[i]=t[i](o[i],r,s);return o}}const o={REDUCERS_FUCTION:"[ERROR] Reducer must be a function!",
 REDUCERS_RETURN:"[ERROR] Reducer should return something!",SUBSCRIBERS_FUNCTION:"[ERROR] Subscribers must be a functions!",ACTION_TYPE:"[ERROR] Actions needs a type"}
 ;return s.prototype.getState=function(){return this.states[this.currentIndex]},s.prototype.dispatch=function(t,e){if(!("type"in t))throw new Error(o.ACTION_TYPE)
 ;var s,i=t.type,u=this.states[this.currentIndex],c=this.reducer(u,i,t);if(n(c,o.REDUCERS_RETURN),delete c.type,e)for(s in t)"type"===s||s in c||(c[s]=t[s]);return r(this,c,i),this},
