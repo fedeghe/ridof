@@ -9,18 +9,149 @@ d88'     d88' `?88P'`88b`?8888P'd88'
 
                                       v. 1.1.7
 
-Size: ~2KB
+Size: ~5KB
 */
-var Ridof=function(){"use strict";function t(){return function(t,e){return e}}function e(t,e){if("function"!=typeof t)throw new Error(e)}function n(t,e){if(void 0===t)throw new Error(e)}
-function r(t,e,n){var r=t.states[t.currentIndex];t.listeners.forEach(function(t){t(r,e,n)}),t.currentIndex<t.states.length-1&&(t.states=t.states.slice(0,t.currentIndex)),t.states[++t.currentIndex]=e}
-function s(n,r){this.reducer=n||t(),e(n,o.REDUCERS_FUCTION),this.state=void 0!==r?r:this.reducer(),this.states=[this.state],this.currentIndex=0,this.listeners=[]}function i(t){const e={};var n
-;for(n in t)e[n]=t[n]();return function(n,r,s){n=n||e;var i,o=Object.assign({},n);for(i in t)o[i]=t[i](o[i],r,s);return o}}const o={REDUCERS_FUCTION:"[ERROR] Reducer must be a function!",
-REDUCERS_RETURN:"[ERROR] Reducer should return something!",SUBSCRIBERS_FUNCTION:"[ERROR] Subscribers must be a functions!",ACTION_TYPE:"[ERROR] Actions needs a type"}
-;return s.prototype.getState=function(){return this.states[this.currentIndex]},s.prototype.dispatch=function(t,e){if(!("type"in t))throw new Error(o.ACTION_TYPE)
-;var s,i=t.type,u=this.states[this.currentIndex],c=this.reducer(u,i,t);if(n(c,o.REDUCERS_RETURN),delete c.type,e)for(s in t)"type"===s||s in c||(c[s]=t[s]);return r(this,c,i),this},
-s.prototype.subscribe=function(t){e(t,o.SUBSCRIBERS_FUNCTION);var n,r=this;return this.listeners.push(t),n=this.listeners.length-1,function(){
-r.listeners=r.listeners.slice(0,n).concat(r.listeners.slice(n+1))}},s.prototype.replaceReducer=function(t){e(t,o.REDUCERS_FUCTION),this.reducer=t},s.prototype.reset=function(){var t=this.states[0]
-;this.states=[t],this.currentIndex=0,this.listeners=[]},s.prototype.move=function(t){if(0===t)return this
-;var e=this,n=this.currentIndex+t,r=this.getState(),s=t>0?"FORWARD":"BACKWARD",i=n>-1&&n<this.states.length;return this.currentIndex=i?n:this.currentIndex,i&&this.listeners.forEach(function(t){
-t(r,e.getState(),{type:["TIMETRAVEL_",s].join("")})}),this},{combine:i,getStore:function(t,e){return new s(t,e)},isStore:function(t){return t instanceof s},ERRORS:o}}()
-;"object"==typeof exports&&(module.exports=Ridof);
+var Ridof = (function () {
+    'use strict';
+    const ERRORS = {
+        REDUCERS_FUCTION: '[ERROR] Reducer must be a function!',
+        REDUCERS_RETURN: '[ERROR] Reducer should return something!',
+        SUBSCRIBERS_FUNCTION: '[ERROR] Subscribers must be a functions!',
+        ACTION_TYPE: '[ERROR] Actions needs a type',
+        UNAUTHORIZED_STATECHANGE: '[ERROR] State transition not allowed'
+    };
+
+    function _isFunction (o, msg) {
+        if (typeof o !== 'function') { throw new Error(msg); }
+    }
+    function _isDefined (o, msg) {
+        if (typeof o === 'undefined') { throw new Error(msg); }
+    }
+    function _pushState (instance, newState, actionType) {
+        var oldState = instance.states[instance.currentIndex];
+        instance.listeners.forEach(function (sub) {
+            sub(oldState, newState, actionType);
+        });
+        if (instance.currentIndex < instance.states.length - 1) {
+            instance.states = instance.states.slice(0, instance.currentIndex);
+        }
+        instance.states[++instance.currentIndex] = newState;
+    }
+
+    function Store (reducer, state, config) {
+        _isFunction(reducer, ERRORS.REDUCERS_FUCTION);
+        this.reducer = reducer;
+        this.state = typeof state !== 'undefined' ? state : this.reducer();
+        this.states = [this.state];
+        this.config = config;
+        this.currentStateName = 'INITIAL';
+        this.currentIndex = 0;
+        this.listeners = [];
+    }
+
+    Store.prototype.getState = function () {
+        return this.states[this.currentIndex];
+    };
+
+    // eslint-disable-next-line complexity
+    Store.prototype.dispatch = function (action, add) {
+        if (!('type' in action)) { throw new Error(ERRORS.ACTION_TYPE); }
+        if (this.config
+            && action.type
+            && this.currentStateName in this.config
+            && !(this.config[this.currentStateName].includes(action.type))
+        ) {
+            throw new Error(ERRORS.UNAUTHORIZED_STATECHANGE);
+        }
+
+        var actionType = action.type,
+            oldState = this.states[this.currentIndex],
+            newState = this.reducer(oldState, actionType, action),
+            i;
+        _isDefined(newState, ERRORS.REDUCERS_RETURN);
+        delete newState.type;
+        if (add) {
+            for (i in action) {
+                if (i !== 'type' && !(i in newState)) {
+                    newState[i] = action[i];
+                }
+            }
+        }
+        if (this.config) {
+            this.currentStateName = actionType;
+        }
+        _pushState(this, newState, actionType);
+        return this;
+    };
+
+    Store.prototype.subscribe = function (subscriber) {
+        _isFunction(subscriber, ERRORS.SUBSCRIBERS_FUNCTION);
+        var self = this,
+            p;
+        this.listeners.push(subscriber);
+        p = this.listeners.length - 1;
+        //
+        // return the unsubcriber
+        return function () {
+            self.listeners = self.listeners.slice(0, p).concat(self.listeners.slice(p + 1));
+        };
+    };
+
+    Store.prototype.replaceReducer = function (reducer) {
+        _isFunction(reducer, ERRORS.REDUCERS_FUCTION);
+        this.reducer = reducer;
+    };
+
+    Store.prototype.reset = function () {
+        var s0 = this.states[0];
+        this.states = [s0];
+        this.currentIndex = 0;
+        this.currentStateName = 'INITIAL';
+        this.listeners = [];
+    };
+
+    Store.prototype.move = function (to) {
+        if (to === 0) return this;
+        var self = this,
+            tmpIndex = this.currentIndex + to,
+            oldState = this.getState(),
+            versus = to > 0 ? 'FORWARD' : 'BACKWARD',
+            willChange = tmpIndex > -1 && tmpIndex < this.states.length;
+        this.currentIndex = willChange ? tmpIndex : this.currentIndex;
+        //
+        willChange && this.listeners.forEach(function (sub) {
+            sub(oldState, self.getState(), { type: ['TIMETRAVEL_', versus].join('') });
+        });
+        return this;
+    };
+
+    function combine (reducers) {
+        const initState = {};
+        var red;
+        for (red in reducers) {
+            initState[red] = reducers[red]();
+        }
+        return function (state, action, params) {
+            state = state || initState;
+            var newState = Object.assign({}, state),
+                reducer;
+            for (reducer in reducers) {
+                newState[reducer] = reducers[reducer](newState[reducer], action, params);
+            }
+            return newState;
+        };
+    }
+
+    return {
+        combine: combine,
+        getStore: function (reducer, initState, config) {
+            return new Store(reducer, initState, config);
+        },
+        isStore: function (s) {
+            return s instanceof Store;
+        },
+        ERRORS: ERRORS
+    };
+})();
+
+(typeof exports === 'object') && (module.exports = Ridof);

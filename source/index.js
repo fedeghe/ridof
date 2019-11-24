@@ -4,10 +4,9 @@ var Ridof = (function () {
         REDUCERS_FUCTION: '[ERROR] Reducer must be a function!',
         REDUCERS_RETURN: '[ERROR] Reducer should return something!',
         SUBSCRIBERS_FUNCTION: '[ERROR] Subscribers must be a functions!',
-        ACTION_TYPE: '[ERROR] Actions needs a type'
+        ACTION_TYPE: '[ERROR] Actions needs a type',
+        UNAUTHORIZED_STATECHANGE: '[ERROR] State transition not allowed'
     };
-
-    function _emptyObjFun () { return function (a, s) { return s; }; }
 
     function _isFunction (o, msg) {
         if (typeof o !== 'function') { throw new Error(msg); }
@@ -26,11 +25,13 @@ var Ridof = (function () {
         instance.states[++instance.currentIndex] = newState;
     }
 
-    function Store (reducer, state) {
-        this.reducer = reducer || _emptyObjFun();
+    function Store (reducer, state, config) {
         _isFunction(reducer, ERRORS.REDUCERS_FUCTION);
+        this.reducer = reducer;
         this.state = typeof state !== 'undefined' ? state : this.reducer();
         this.states = [this.state];
+        this.config = config;
+        this.currentStateName = 'INITIAL';
         this.currentIndex = 0;
         this.listeners = [];
     }
@@ -39,8 +40,17 @@ var Ridof = (function () {
         return this.states[this.currentIndex];
     };
 
+    // eslint-disable-next-line complexity
     Store.prototype.dispatch = function (action, add) {
         if (!('type' in action)) { throw new Error(ERRORS.ACTION_TYPE); }
+        if (this.config
+            && action.type
+            && this.currentStateName in this.config
+            && !(this.config[this.currentStateName].includes(action.type))
+        ) {
+            throw new Error(ERRORS.UNAUTHORIZED_STATECHANGE);
+        }
+
         var actionType = action.type,
             oldState = this.states[this.currentIndex],
             newState = this.reducer(oldState, actionType, action),
@@ -53,6 +63,9 @@ var Ridof = (function () {
                     newState[i] = action[i];
                 }
             }
+        }
+        if (this.config) {
+            this.currentStateName = actionType;
         }
         _pushState(this, newState, actionType);
         return this;
@@ -80,6 +93,7 @@ var Ridof = (function () {
         var s0 = this.states[0];
         this.states = [s0];
         this.currentIndex = 0;
+        this.currentStateName = 'INITIAL';
         this.listeners = [];
     };
 
@@ -117,8 +131,8 @@ var Ridof = (function () {
 
     return {
         combine: combine,
-        getStore: function (reducer, initState) {
-            return new Store(reducer, initState);
+        getStore: function (reducer, initState, config) {
+            return new Store(reducer, initState, config);
         },
         isStore: function (s) {
             return s instanceof Store;
