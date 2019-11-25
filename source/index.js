@@ -4,10 +4,9 @@ var Ridof = (function () {
         REDUCERS_FUCTION: '[ERROR] Reducer must be a function!',
         REDUCERS_RETURN: '[ERROR] Reducer should return something!',
         SUBSCRIBERS_FUNCTION: '[ERROR] Subscribers must be a functions!',
-        ACTION_TYPE: '[ERROR] Actions needs a type'
+        ACTION_TYPE: '[ERROR] Actions needs a type',
+        UNAUTHORIZED_STATECHANGE: '[ERROR] State transition not allowed'
     };
-
-    function _emptyObjFun () { return function (a, s) { return s; }; }
 
     function _isFunction (o, msg) {
         if (typeof o !== 'function') { throw new Error(msg); }
@@ -22,15 +21,38 @@ var Ridof = (function () {
         });
         if (instance.currentIndex < instance.states.length - 1) {
             instance.states = instance.states.slice(0, instance.currentIndex);
+            instance.tagsManager.reset(instance.currentIndex + 1);
         }
+        instance.tagsManager.add(actionType);
         instance.states[++instance.currentIndex] = newState;
     }
 
-    function Store (reducer, state) {
-        this.reducer = reducer || _emptyObjFun();
+    function TagsManager (init) {
+        this.tags = [init];
+        this.size = 1;
+    }
+    TagsManager.prototype.getCurrent = function () {
+        return this.size ? this.tags[this.size - 1] : void (0);
+    };
+    TagsManager.prototype.add = function (tag) {
+        this.size++;
+        this.tags.push(tag);
+    };
+    TagsManager.prototype.reset = function (to) {
+        this.tags = to ? this.tags.slice(0, to) : [];
+        this.size = to ? this.tags.length : 0;
+    };
+
+    //
+    // Store
+    //
+    function Store (reducer, state, config) {
         _isFunction(reducer, ERRORS.REDUCERS_FUCTION);
+        this.reducer = reducer;
         this.state = typeof state !== 'undefined' ? state : this.reducer();
         this.states = [this.state];
+        this.config = config;
+        this.tagsManager = new TagsManager('INITIAL');
         this.currentIndex = 0;
         this.listeners = [];
     }
@@ -39,8 +61,19 @@ var Ridof = (function () {
         return this.states[this.currentIndex];
     };
 
+    // eslint-disable-next-line complexity
     Store.prototype.dispatch = function (action, add) {
+        var tag = this.tagsManager.getCurrent();
         if (!('type' in action)) { throw new Error(ERRORS.ACTION_TYPE); }
+        if (this.config
+            && action.type
+            && tag in this.config
+            && !(this.config[tag].includes(action.type))
+        ) {
+            throw new Error(ERRORS.UNAUTHORIZED_STATECHANGE);
+        }
+
+        // eslint-disable-next-line one-var
         var actionType = action.type,
             oldState = this.states[this.currentIndex],
             newState = this.reducer(oldState, actionType, action),
@@ -54,6 +87,7 @@ var Ridof = (function () {
                 }
             }
         }
+
         _pushState(this, newState, actionType);
         return this;
     };
@@ -80,6 +114,7 @@ var Ridof = (function () {
         var s0 = this.states[0];
         this.states = [s0];
         this.currentIndex = 0;
+        this.tagsManager.reset();
         this.listeners = [];
     };
 
@@ -117,8 +152,8 @@ var Ridof = (function () {
 
     return {
         combine: combine,
-        getStore: function (reducer, initState) {
-            return new Store(reducer, initState);
+        getStore: function (reducer, initState, config) {
+            return new Store(reducer, initState, config);
         },
         isStore: function (s) {
             return s instanceof Store;

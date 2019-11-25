@@ -11,8 +11,8 @@
         "test": "mocha",
         "prepublishOnly": "npm i && malta source/build.json",
         "precommit": "yarn lint",
-        "cover": "nyc yarn test && nyc report --reporter=html",
-        "coveralls": "nyc yarn test && nyc report --reporter=text-lcov | coveralls"
+        "cover": "nyc npm run test && nyc report --reporter=html",
+        "coveralls": "nyc npm run test && nyc report --reporter=text-lcov | coveralls"
     },
     "repository": {
         "type": "git",
@@ -26,7 +26,7 @@
     },
     "homepage": "https://github.com/fedeghe/ridof#readme",
     "devDependencies": {
-        "coveralls": "^3.0.2",
+        "coveralls": "^3.0.8",
         "eslint": "^5.15.1",
         "eslint-config-standard": "^12.0.0",
         "eslint-plugin-import": "^2.16.0",
