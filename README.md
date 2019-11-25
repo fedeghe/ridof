@@ -171,3 +171,14 @@ store.dispatch({ type: 'END' });
 ```
 -----
 
+Restrict state transitions  
+
+From version 1.2.0 is possible to restrict the state transitions passing to `getStore` a third config parameter: 
+
+```
+Ridof.getStore(reducer, initState, {
+    'INITIAL': ['INCREMENT'],
+    'INCREMENT': ['DECREMENT', 'VALIDATE'],
+    'VALIDATE': ['RESET']
+})
+```
