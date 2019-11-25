@@ -32,7 +32,7 @@ describe('errors', () => {
         }
     });
 
-    it('throws an error if dispatch a obj with no type', () => {
+    it('throws an Error if dispatch a obj with no type', () => {
         try {
             const store = Ridof.getStore(() => ({}));
             store.dispatch({ typo: 'DECREMENT' });

@@ -34,17 +34,38 @@ var Ridof = (function () {
         });
         if (instance.currentIndex < instance.states.length - 1) {
             instance.states = instance.states.slice(0, instance.currentIndex);
+            instance.tagsManager.reset(instance.currentIndex + 1);
         }
+        instance.tagsManager.add(actionType);
         instance.states[++instance.currentIndex] = newState;
     }
 
+    function TagsManager (init) {
+        this.tags = [init];
+        this.size = 1;
+    }
+    TagsManager.prototype.getCurrent = function () {
+        return this.size ? this.tags[this.size - 1] : void (0);
+    };
+    TagsManager.prototype.add = function (tag) {
+        this.size++;
+        this.tags.push(tag);
+    };
+    TagsManager.prototype.reset = function (to) {
+        this.tags = to ? this.tags.slice(0, to) : [];
+        this.size = to ? this.tags.length : 0;
+    };
+
+    //
+    // Store
+    //
     function Store (reducer, state, config) {
         _isFunction(reducer, ERRORS.REDUCERS_FUCTION);
         this.reducer = reducer;
         this.state = typeof state !== 'undefined' ? state : this.reducer();
         this.states = [this.state];
         this.config = config;
-        this.currentStateName = 'INITIAL';
+        this.tagsManager = new TagsManager('INITIAL');
         this.currentIndex = 0;
         this.listeners = [];
     }
@@ -55,15 +76,17 @@ var Ridof = (function () {
 
     // eslint-disable-next-line complexity
     Store.prototype.dispatch = function (action, add) {
+        var tag = this.tagsManager.getCurrent();
         if (!('type' in action)) { throw new Error(ERRORS.ACTION_TYPE); }
         if (this.config
             && action.type
-            && this.currentStateName in this.config
-            && !(this.config[this.currentStateName].includes(action.type))
+            && tag in this.config
+            && !(this.config[tag].includes(action.type))
         ) {
             throw new Error(ERRORS.UNAUTHORIZED_STATECHANGE);
         }
 
+        // eslint-disable-next-line one-var
         var actionType = action.type,
             oldState = this.states[this.currentIndex],
             newState = this.reducer(oldState, actionType, action),
@@ -77,9 +100,7 @@ var Ridof = (function () {
                 }
             }
         }
-        if (this.config) {
-            this.currentStateName = actionType;
-        }
+
         _pushState(this, newState, actionType);
         return this;
     };
@@ -106,7 +127,7 @@ var Ridof = (function () {
         var s0 = this.states[0];
         this.states = [s0];
         this.currentIndex = 0;
-        this.currentStateName = 'INITIAL';
+        this.tagsManager.reset();
         this.listeners = [];
     };
 
