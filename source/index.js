@@ -27,12 +27,24 @@ var Ridof = (function () {
         instance.states[++instance.currentIndex] = newState;
     }
 
-    function TagsManager (init) {
+    function TagsManager (init, config) {
+        this.activeCheck = !!config;
+        this.config = config || {};
         this.tags = [init];
         this.size = 1;
     }
     TagsManager.prototype.getCurrent = function () {
         return this.size ? this.tags[this.size - 1] : void (0);
+    };
+    TagsManager.prototype.canMoveTo = function (tag) {
+        if (this.activeCheck) {
+            // tag in this.config
+            var keys = Object.keys(this.config),
+                currentKey = this.tags[this.size - 1],
+                key = ~~(keys.indexOf(tag));
+            return key >= 0 ? this.config[currentKey].includes(key) : false;
+        }
+        return true;
     };
     TagsManager.prototype.add = function (tag) {
         this.size++;
@@ -51,8 +63,7 @@ var Ridof = (function () {
         this.reducer = reducer;
         this.state = typeof state !== 'undefined' ? state : this.reducer();
         this.states = [this.state];
-        this.config = config;
-        this.tagsManager = new TagsManager('INITIAL');
+        this.tagsManager = new TagsManager('INITIAL', config);
         this.currentIndex = 0;
         this.listeners = [];
     }
@@ -64,12 +75,10 @@ var Ridof = (function () {
     // eslint-disable-next-line complexity
     Store.prototype.dispatch = function (action, add) {
         var tag = this.tagsManager.getCurrent();
-        if (!('type' in action)) { throw new Error(ERRORS.ACTION_TYPE); }
-        if (this.config
-            && action.type
-            && tag in this.config
-            && !(this.config[tag].includes(action.type))
-        ) {
+        if (!('type' in action)) {
+            throw new Error(ERRORS.ACTION_TYPE);
+        }
+        if (!this.tagsManager.canMoveTo(action.type)) {
             throw new Error(ERRORS.UNAUTHORIZED_STATECHANGE);
         }
 

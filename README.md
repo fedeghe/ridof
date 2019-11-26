@@ -177,8 +177,12 @@ From version 1.2.0 is possible to restrict the state transitions passing to `get
 
 ```
 Ridof.getStore(reducer, initState, {
-    'INITIAL': ['INCREMENT'],
-    'INCREMENT': ['DECREMENT', 'VALIDATE'],
-    'VALIDATE': ['RESET']
+    'INITIAL': [1 /* can go to INCREMENT*/],
+    'INCREMENT': [
+        2, // either decrement
+        3   //   "    validate 
+    ],
+    'DECREMENT': [/* go nowhere from here */],
+    'VALIDATE': [34] // out of bounds
 })
 ```

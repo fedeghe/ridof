@@ -67,7 +67,7 @@ describe('basic actions', () => {
         store.dispatch({ type: 'DECREMENT' });
     });
 
-    it('all subscribers are noticed', () => {
+    it('all subscribers are notified', () => {
         var count = 3;
         store.subscribe((oldState, newState, action) => {
             count *= 5;

@@ -30,9 +30,12 @@ describe('config restrictions', () => {
     var store;
     beforeEach(() => {
         store = Ridof.getStore(reducer, initState, {
-            'INITIAL': ['INCREMENT', 'DECREMENT'],
-            'INCREMENT': ['INCREMENT', 'DECREMENT', 'INVALIDATE', 'VALIDATE', 'RESET'],
-            'DECREMENT': ['INCREMENT', 'DECREMENT', 'INVALIDATE', 'VALIDATE', 'RESET']
+            'INITIAL': [1, 2],
+            'INCREMENT': [1, 2, 3, 4, 5],
+            'DECREMENT': [1, 2, 3, 4, 5],
+            'INVALIDATE': [],
+            'VALIDATE': [],
+            'RESET': []
         });
     });
     it('should throw an error when trying to invalidate', () => {
@@ -48,9 +51,7 @@ describe('config restrictions', () => {
         store.dispatch({ type: 'INCREMENT' });
         store.subscribe((oldState, newState, action) => {
             assert.strictEqual(JSON.stringify(oldState), JSON.stringify({ number: 1, valid: true }));
-            assert.strictEqual(JSON.stringify(newState), JSON.stringify({ number: 1, valid: false }));
+            assert.strictEqual(JSON.stringify(newState), JSON.stringify({ number: 2, valid: true }));
         });
-        store.dispatch({ type: 'INVALIDATE' });
-        store.reset();
     });
 });
