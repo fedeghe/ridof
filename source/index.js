@@ -26,6 +26,22 @@ var Ridof = (function () {
         instance.tagsManager.add(actionType);
         instance.states[++instance.currentIndex] = newState;
     }
+    function _combine (reducers) {
+        const initState = {};
+        var red;
+        for (red in reducers) {
+            initState[red] = reducers[red]();
+        }
+        return function (state, action, params) {
+            state = state || initState;
+            var newState = Object.assign({}, state),
+                reducer;
+            for (reducer in reducers) {
+                newState[reducer] = reducers[reducer](newState[reducer], action, params);
+            }
+            return newState;
+        };
+    }
 
     function TagsManager (init, config) {
         this.activeCheck = !!config;
@@ -74,7 +90,6 @@ var Ridof = (function () {
 
     // eslint-disable-next-line complexity
     Store.prototype.dispatch = function (action, add) {
-        var tag = this.tagsManager.getCurrent();
         if (!('type' in action)) {
             throw new Error(ERRORS.ACTION_TYPE);
         }
@@ -87,6 +102,7 @@ var Ridof = (function () {
             oldState = this.states[this.currentIndex],
             newState = this.reducer(oldState, actionType, action),
             i;
+
         _isDefined(newState, ERRORS.REDUCERS_RETURN);
         delete newState.type;
         if (add) {
@@ -142,25 +158,8 @@ var Ridof = (function () {
         return this;
     };
 
-    function combine (reducers) {
-        const initState = {};
-        var red;
-        for (red in reducers) {
-            initState[red] = reducers[red]();
-        }
-        return function (state, action, params) {
-            state = state || initState;
-            var newState = Object.assign({}, state),
-                reducer;
-            for (reducer in reducers) {
-                newState[reducer] = reducers[reducer](newState[reducer], action, params);
-            }
-            return newState;
-        };
-    }
-
     return {
-        combine: combine,
+        combine: _combine,
         getStore: function (reducer, initState, config) {
             return new Store(reducer, initState, config);
         },

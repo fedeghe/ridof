@@ -24,25 +24,24 @@ Create a store
 const Ridof = require('ridof');
 
 const initialState = {
-    num: 1,
-    name: 'Federico'
+    swithes: 0,
+    lit: false
 }
 // The reducer function
 // params holds all the values passed to dispatch but the type
 const reducer = (oldState, action, params) => {
     const newState = Object.assign({}, oldState)
+    // can happen that the bulb breaks
+    if (Math.random() < 0.01) {
+        action = 'BREAK'
+    }
     switch (action) {
-        case 'INCREMENT':
-            newState.num += 1;
+        case 'TOGGLE':
+            newState.lit = !oldState.lit
+            newState.switches = oldState.switches + 1
             break;
-        case 'DECREMENT':
-            newState.num -= 1;
-            break;
-        case 'POW':
-            newState.num *= newState.num;
-            break;
-        case 'RENAME':
-            newState.name = params.name || 'no name given';
+        case 'BREAK':
+            newState.lit = false;
             break;
     }
     return newState;
@@ -53,15 +52,13 @@ const Store = Ridof.getStore(reducer, initialState);
 Store.subscribe((oldState, newState, action) => {
     console.log(newState);
 })
-Store.dispatch({type: 'INCREMENT'}) // -> {num: 2, name: 'Federico'}
-Store.dispatch({type: 'INCREMENT'}) // -> {num: 3, name: 'Federico'}
-Store.dispatch({type: 'POW'}) // -> {num: 9, name: 'Federico'}
-Store.dispatch({type: 'DECREMENT'}) // -> {num: 8, name: 'Federico'}
-Store.dispatch({type: 'POW'}) // -> {num: 64, name: 'Federico'}
-Store.dispatch({type: 'INCREMENT'}) // -> {num: 65, name: 'Federico'}
-Store.dispatch({type: 'POW'}) // -> {num: 4225, name: 'Federico'}
-Store.dispatch({type: 'RENAME'}) // -> {num: 4225, name: 'no name given'}
-Store.dispatch({type: 'RENAME', name: 'Foo'}) // -> {num: 4225, name: 'Foo'}
+Store.dispatch({type: 'TOGGLE'}) // -> {swithes: 1, lit: true}
+Store.dispatch({type: 'TOGGLE'}) // -> {swithes: 2, lit: false}
+Store.dispatch({type: 'TOGGLE'}) // -> {swithes: 3, lit: true}
+Store.dispatch({type: 'TOGGLE'}) // -> {swithes: 4, lit: false}
+Store.dispatch({type: 'TOGGLE'}) // -> {swithes: 5, lit: true}
+Store.dispatch({type: 'BREAK'}) // -> {swithes: 6, lit: false}
+Store.dispatch({type: 'TOGGLE'}) // Exception
 ...
 ```
 ## Time travel 
@@ -106,13 +103,13 @@ Store.dispatch({
 ```
 a second `Boolean` parameter is accepted by the `dispatch`; when `true` it allows to add (after reducer action on the state) the parameters passed that are missing on the state:
 ``` js
-// { num: 0 }
+// state: { num: 0 }
 Store.dispatch({
     type:'INCREMENT', // this action only increments `num`
     all: 'others',
     params: 'follows'
 }, true); // it is passed so missing ones will be added
-// { num: 0, all: 'others', params: 'follows'}
+// state: { num: 0, all: 'others', params: 'follows'}
 ```
 -----
 Move in the states:
@@ -175,14 +172,14 @@ Restrict state transitions
 
 From version 1.2.0 is possible to restrict the state transitions passing to `getStore` a third config parameter: 
 
-```
+``` js
 Ridof.getStore(reducer, initState, {
-    'INITIAL': [1 /* can go to INCREMENT*/],
-    'INCREMENT': [
-        2, // either decrement
-        3   //   "    validate 
+    'INITIAL': [ 1 ],
+    'TOGGLE': [
+        1, // either toggle
+        2   //   "   break
     ],
-    'DECREMENT': [/* go nowhere from here */],
-    'VALIDATE': [34] // out of bounds
-})
+    'BREAK': [/* go nowhere from here */]
+});
 ```
+as You can see this bulb will

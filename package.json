@@ -33,7 +33,7 @@
         "eslint-plugin-node": "^8.0.1",
         "eslint-plugin-promise": "^4.0.1",
         "eslint-plugin-standard": "^4.0.0",
-        "malta": "^3.9.15",
+        "malta": "4.0.7",
         "malta-header-comment": "^1.0.5",
         "malta-js-uglify": "^1.0.3",
         "malta-mocha": "^1.0.12",
