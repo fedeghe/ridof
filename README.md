@@ -157,7 +157,7 @@ store.subscribe((oldState, newState, action) => {
     if (action === 'END') {
         console.log(store.getState())
         /*
-        {
+        {   
             mods: ['mymod1', 'mymod2'],
             plugins: ['myplugin']
         }
@@ -175,14 +175,14 @@ Restrict state transitions
 
 From version 1.2.0 is possible to restrict the state transitions passing to `getStore` a third config parameter: 
 
-```
+``` js
 Ridof.getStore(reducer, initState, {
     'INITIAL': [1 /* can go to INCREMENT*/],
     'INCREMENT': [
-        2, // either decrement
-        3   //   "    validate 
+        2, // decrement, but not increment again
+        3 // pow
     ],
-    'DECREMENT': [/* go nowhere from here */],
-    'VALIDATE': [34] // out of bounds
+    'DECREMENT': [/* anywhere*/]
+    'POW': [/* anywhere*/]
 })
 ```
