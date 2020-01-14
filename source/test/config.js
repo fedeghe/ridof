@@ -1,33 +1,32 @@
-var assert = require('assert'),
-    Ridof = require('../dist/index.js'),
-    initState = { number: 0, valid: true },
-    ERRORS = Ridof.ERRORS,
-    reducer = function (state, action, params) {
-        var newState = Object.assign({}, state);
-        switch (action) {
-            case 'INCREMENT':
-                newState.number++;
-                break;
-            case 'DECREMENT':
-                newState.number--;
-                break;
-            case 'VALIDATE':
-                newState.valid = true;
-                break;
-            case 'INVALIDATE':
-                newState.valid = false;
-                break;
-            case 'RESET':
-                newState = Object.assign({}, initState);
-                break;
-            default:
-                return newState;
-        }
-        return newState;
-    };
+
 
 describe('config restrictions', () => {
-    var store;
+    var store,
+        initState = { number: 0, valid: true },
+        ERRORS = Ridof.ERRORS,
+        reducer = function (state, action, params) {
+            var newState = Object.assign({}, state);
+            switch (action) {
+                case 'INCREMENT':
+                    newState.number++;
+                    break;
+                case 'DECREMENT':
+                    newState.number--;
+                    break;
+                case 'VALIDATE':
+                    newState.valid = true;
+                    break;
+                case 'INVALIDATE':
+                    newState.valid = false;
+                    break;
+                case 'RESET':
+                    newState = Object.assign({}, initState);
+                    break;
+                default:
+                    return newState;
+            }
+            return newState;
+        };
     beforeEach(() => {
         store = Ridof.getStore(reducer, initState, {
             'INITIAL': [1, 2],

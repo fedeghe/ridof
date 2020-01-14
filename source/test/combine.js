@@ -1,7 +1,3 @@
-var assert = require('assert'),
-    Ridof = require('../dist/index.js');
-
-
 describe('combine some reducers', () => {
     it('will combine two', () => {
         const combined = Ridof.combine({

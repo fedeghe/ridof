@@ -1,6 +1,3 @@
-var assert = require('assert'),
-    Ridof = require('../dist/index.js');
-
 describe('readme sample', () => {
     it('should work', () => {
         let index = 0;

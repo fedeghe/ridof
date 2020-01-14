@@ -1,32 +1,29 @@
-var assert = require('assert'),
-    Ridof = require('../dist/index.js'),
-    initState = { number: 0, valid: true },
-    reducer = function (state, action, params) {
-        var newState = Object.assign({}, state);
-        switch (action) {
-            case 'INCREMENT':
-                newState.number++;
-                break;
-            case 'DECREMENT':
-                newState.number--;
-                break;
-            case 'VALIDATE':
-                newState.valid = true;
-                break;
-            case 'INVALIDATE':
-                newState.valid = false;
-                break;
-            case 'RESET':
-                newState = Object.assign({}, initState);
-                break;
-            default:
-                return newState;
-        }
-        return newState;
-    };
-
 describe('time travel', () => {
-    var store;
+    var store,
+        initState = { number: 0, valid: true },
+        reducer = function (state, action, params) {
+            var newState = Object.assign({}, state);
+            switch (action) {
+                case 'INCREMENT':
+                    newState.number++;
+                    break;
+                case 'DECREMENT':
+                    newState.number--;
+                    break;
+                case 'VALIDATE':
+                    newState.valid = true;
+                    break;
+                case 'INVALIDATE':
+                    newState.valid = false;
+                    break;
+                case 'RESET':
+                    newState = Object.assign({}, initState);
+                    break;
+                default:
+                    return newState;
+            }
+            return newState;
+        };
     before(() => {
         store = Ridof.getStore(reducer, initState);
     });

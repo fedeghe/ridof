@@ -1,31 +1,3 @@
-var assert = require('assert'),
-    Ridof = require('../dist/index.js'),
-
-    initState = { number: 0, valid: true },
-    reducer = function (state, action, params) {
-        var newState = Object.assign({}, state);
-        switch (action) {
-            case 'INCREMENT':
-                newState.number++;
-                break;
-            case 'DECREMENT':
-                newState.number--;
-                break;
-            case 'VALIDATE':
-                newState.valid = true;
-                break;
-            case 'INVALIDATE':
-                newState.valid = false;
-                break;
-            case 'RESET':
-                newState = Object.assign({}, initState);
-                break;
-            default:
-                return newState;
-        }
-        return newState;
-    };
-
 describe('basic construction', () => {
     it('should return a store, with empty initial state', () => {
         var store = Ridof.getStore(() => ({}));
@@ -45,7 +17,31 @@ describe('basic construction', () => {
 });
 
 describe('basic actions', () => {
-    var store;
+    var store,
+        initState = { number: 0, valid: true },
+        reducer = function (state, action, params) {
+            var newState = Object.assign({}, state);
+            switch (action) {
+                case 'INCREMENT':
+                    newState.number++;
+                    break;
+                case 'DECREMENT':
+                    newState.number--;
+                    break;
+                case 'VALIDATE':
+                    newState.valid = true;
+                    break;
+                case 'INVALIDATE':
+                    newState.valid = false;
+                    break;
+                case 'RESET':
+                    newState = Object.assign({}, initState);
+                    break;
+                default:
+                    return newState;
+            }
+            return newState;
+        };
     before(() => {
         store = Ridof.getStore(reducer, initState);
     });
@@ -113,6 +109,7 @@ describe('should add to the state ', () => {
                 }
                 return newState;
             },
+            initState = { number: 0, valid: true },
             store = Ridof.getStore(reducer2, initState);
         store.subscribe((oldState, newState, action) => {
             assert.strictEqual(action, 'ADD');

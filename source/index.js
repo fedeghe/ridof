@@ -42,7 +42,9 @@ var Ridof = (function () {
             var keys = Object.keys(this.config),
                 currentKey = this.tags[this.size - 1],
                 key = ~~(keys.indexOf(tag));
-            return key >= 0 ? this.config[currentKey].includes(key) : false;
+            return key >= 0
+                ? this.config[currentKey].includes(key)
+                : false;
         }
         return true;
     };
