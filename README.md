@@ -7,17 +7,15 @@ Simple isomorphic state manager
 
 ## Install it
 
-    @ npm i ridof
+    @ yarn add ridof
 
 ## Run the tests coverage
 
 From the `node_modules/ridof` folder run
 
-    @ npm i && npm run cover
+    @ yarn && yarn cover
 
 ## Use it
-
-Load the `dist/index.js` script and then...
 
 Create a store
 ``` js
