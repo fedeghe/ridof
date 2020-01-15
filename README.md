@@ -11,9 +11,9 @@ Simple isomorphic state manager
 
 ## Run the tests coverage
 
-From the `node_modules/ridof` folder run
 
-    @ yarn && yarn cover
+    @ cd node_modules/ridof
+    @ yarn && yarn build && yarn cover
 
 ## Use it
 
