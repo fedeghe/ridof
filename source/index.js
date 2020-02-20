@@ -34,7 +34,7 @@ var Ridof = (function () {
         this.size = 1;
     }
     TagsManager.prototype.getCurrent = function () {
-        return this.size ? this.tags[this.size - 1] : void (0);
+        return this.tags[this.size - 1];
     };
     TagsManager.prototype.canMoveTo = function (tag) {
         if (this.activeCheck) {
@@ -54,7 +54,7 @@ var Ridof = (function () {
     };
     TagsManager.prototype.reset = function (to) {
         this.tags = to ? this.tags.slice(0, to) : [];
-        this.size = to ? this.tags.length : 0;
+        this.size = to ? this.tags.length : 1;
     };
 
     //
@@ -76,7 +76,6 @@ var Ridof = (function () {
 
     // eslint-disable-next-line complexity
     Store.prototype.dispatch = function (action, add) {
-        var tag = this.tagsManager.getCurrent();
         if (!('type' in action)) {
             throw new Error(ERRORS.ACTION_TYPE);
         }
@@ -152,10 +151,9 @@ var Ridof = (function () {
         }
         return function (state, action, params) {
             state = state || initState;
-            var newState = Object.assign({}, state),
-                reducer;
-            for (reducer in reducers) {
-                newState[reducer] = reducers[reducer](newState[reducer], action, params);
+            var newState = Object.assign({}, state);
+            for (red in reducers) {
+                newState[red] = reducers[red](newState[red], action, params);
             }
             return newState;
         };

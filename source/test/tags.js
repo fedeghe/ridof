@@ -1,5 +1,8 @@
 describe('no transition config', () => {
     var store = Ridof.getStore(() => ({}));
+    it('the tagsManager should be empty', () => {
+        assert.strictEqual(store.tagsManager.getCurrent(store), 'INITIAL');
+    });
     it('the tagsManager should contain the expected values', () => {
         store.dispatch({
             type: 'INCREMENT'
