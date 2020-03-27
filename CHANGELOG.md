@@ -1,3 +1,3 @@
 ### Changelog  
 
-**1.2.6**: update vulnerable deps
+**1.2.7**: update vulnerable deps
