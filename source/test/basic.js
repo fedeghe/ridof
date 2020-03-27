@@ -19,7 +19,7 @@ describe('basic construction', () => {
 describe('basic actions', () => {
     var store,
         initState = { number: 0, valid: true },
-        reducer = function (state, action, params) {
+        reducer = (state, action, params) => {
             var newState = Object.assign({}, state);
             switch (action) {
                 case 'INCREMENT':
@@ -99,7 +99,7 @@ describe('basic actions', () => {
 
 describe('should add to the state ', () => {
     it('fill the state lately', () => {
-        var reducer2 = function (oldState, action, params) {
+        var reducer2 = (oldState, action, params) => {
                 const newState = Object.assign({}, oldState);
                 switch (action) {
                     case 'ADD':

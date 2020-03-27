@@ -1,7 +1,7 @@
 describe('time travel', () => {
     var store,
         initState = { number: 0, valid: true },
-        reducer = function (state, action, params) {
+        reducer = (state, action, params) => {
             var newState = Object.assign({}, state);
             switch (action) {
                 case 'INCREMENT':

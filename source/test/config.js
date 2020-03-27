@@ -4,7 +4,7 @@ describe('config restrictions', () => {
     var store,
         initState = { number: 0, valid: true },
         ERRORS = Ridof.ERRORS,
-        reducer = function (state, action, params) {
+        reducer = (state, action, params) => {
             var newState = Object.assign({}, state);
             switch (action) {
                 case 'INCREMENT':
