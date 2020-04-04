@@ -1,4 +1,6 @@
-var assert = require('assert'),
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
+const assert = require('assert'),
     Ridof = require('../dist/index.js');
 
 maltaF('basic.js');

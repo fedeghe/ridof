@@ -1,5 +1,5 @@
 describe('readme sample', () => {
-    it('should work', () => {
+    it('should work', done => {
         let index = 0;
         const initialState = {
                 num: 1,
@@ -28,6 +28,7 @@ describe('readme sample', () => {
             },
 
             // initialState is optional, default is {}
+            // eslint-disable-next-line no-undef
             Store = Ridof.getStore(reducer, initialState),
             expected = [
                 { num: 1, name: 'Federico' },
@@ -43,8 +44,11 @@ describe('readme sample', () => {
             ];
 
         Store.subscribe((oldState, newState, action) => {
+            // eslint-disable-next-line no-undef
             assert.strictEqual(JSON.stringify(oldState), JSON.stringify(expected[index++]));
+            // eslint-disable-next-line no-undef
             assert.strictEqual(JSON.stringify(newState), JSON.stringify(expected[index]));
+            index === expected.length - 1 && done();
         });
 
         Store.dispatch({ type: 'INCREMENT' });

@@ -6,6 +6,10 @@
     "globals": {
         "BIN_MODE": true
     },
+    "ignorePatterns": [
+        "test/",
+        "dist/"
+    ],
     "rules": {
         "complexity": [
             "error",
