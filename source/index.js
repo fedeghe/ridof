@@ -85,8 +85,10 @@ var Ridof = (function () {
 
         // eslint-disable-next-line one-var
         var actionType = action.type,
-            oldState = this.states[this.currentIndex],
-            newState = this.reducer(oldState, actionType, action),
+            newState = this.reducer(
+                this.states[this.currentIndex], // old state      */
+                actionType,
+                action),
             i;
         _isDefined(newState, ERRORS.REDUCERS_RETURN);
         delete newState.type;
