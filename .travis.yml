@@ -1,15 +1,10 @@
-install: yarn
+install: npm install
 language: node_js 
-before_script: 
-before_script:
-    - node_modules/malta/src/bin.js source/build.json
-    - nvm install 11.10.0
-    - npm install -g yarn
-    - yarn install
+before_script: node_modules/malta/src/bin.js source/build.json
 script:
-- yarn build
-- yarn test
+- npm build
+- npm test
 after_success:
-- yarn coveralls
+- npm run coveralls
 node_js:
   - "11.10.0"
