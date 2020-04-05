@@ -1628,10 +1628,10 @@ malta-mocha@^1.0.16:
   dependencies:
     mocha "7.1.1"
 
-malta@4.0.7:
-  version "4.0.7"
-  resolved "https://registry.yarnpkg.com/malta/-/malta-4.0.7.tgz#4413fa6b00a5dd45d86ed8af0441b291d414f168"
-  integrity sha512-DVvnbnJ9ltwCaEcihNJNcN+Y+nt6uz+oCb4Rim4wfuBsBAbKp7DLv2Okf7w9pisoDmo4KZJHF3tXvjqguoS52A==
+malta@4.1.17:
+  version "4.1.17"
+  resolved "https://registry.yarnpkg.com/malta/-/malta-4.1.17.tgz#9b43a505bf1a7e5418eab7327aac06d9fb915c17"
+  integrity sha512-bSBYTAu+r4xBVMNx1KwCjAR9laV92EyXTHxlZVsATpLF7aD3cd9+T2NxDYX2NB7LSX9Y0pCyDkLyDs4D4NfFLA==
 
 mime-db@1.43.0:
   version "1.43.0"

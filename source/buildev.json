@@ -1,6 +1,6 @@
 {
     "EXE": "mkdir -p test dist",
     "source/test/index.js": "test -plugins=malta-mocha -options=placeholderMode:\"func\"",
-    "source/index.js": "dist -plugins=malta-header-comment[name:\"source/header.txt\"]...malta-mocha",
+    "source/index.js": "dist -plugins=malta-header-comment[name:\"source/header.txt\"]...malta-mocha -options=placeholderMode:\"func\"",
     "source/*.md": "."
 }
