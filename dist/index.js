@@ -39,17 +39,17 @@ var Ridof = (function () {
         if (typeof o === 'undefined') { throw new Error(msg); }
     }
     
-    function _pushState (instance, newState, actionType) {
-        var oldState = instance.states[instance.currentIndex];
-        instance.listeners.forEach(function (sub) {
+    function _pushState (inst, newState, actionType) {
+        var oldState = inst.states[inst.currentIndex];
+        inst.listeners.forEach(function (sub) {
             sub(oldState, newState, actionType);
         });
-        if (instance.currentIndex < instance.states.length - 1) {
-            instance.states = instance.states.slice(0, instance.currentIndex);
-            instance.tagsManager.reset(instance.currentIndex + 1);
+        if (inst.currentIndex < inst.states.length - 1) {
+            inst.states = inst.states.slice(0, inst.currentIndex);
+            inst.tagsManager.reset(inst.currentIndex + 1);
         }
-        instance.tagsManager.add(actionType);
-        instance.states[++instance.currentIndex] = newState;
+        inst.tagsManager.add(actionType);
+        inst.states[++inst.currentIndex] = newState;
     }
     
     ;
