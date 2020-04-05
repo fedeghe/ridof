@@ -2,10 +2,16 @@
 var Ridof = (function () {
     'use strict';
 
-    maltaF('errors.js');
-    maltaF('utils.js');
-    maltaF('tagsManager.js');
-    maltaF('store.js');
+
+    // eslint-disable-next-line semi
+    maltaF('errors.js')
+    // eslint-disable-next-line semi
+    maltaF('utils.js')
+    // eslint-disable-next-line semi
+    maltaF('tagsManager.js')
+    // eslint-disable-next-line semi
+    maltaF('store.js')
+
 
     function combine (reducers) {
         const initState = {};
