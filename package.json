@@ -5,7 +5,7 @@
     "main": "dist/index.js",
     "scripts": {
         "build": "malta source/build.json",
-        "buildev": "malta source/buildev.json",
+ \       "buildev": "malta source/buildev.json",
         "clean": "malta source/clean.json",
         "lint": "eslint --ignore-path .eslintignore .",
         "test": "mocha",
@@ -27,7 +27,7 @@
     "homepage": "https://github.com/fedeghe/ridof#readme",
     "devDependencies": {
         "coveralls": "^3.0.9",
-        "eslint": "^6.8.0",
+        "eslint": "^6.0.1",
         "eslint-config-standard": "^14.1.1",
         "eslint-plugin-import": "^2.20.1",
         "eslint-plugin-node": "^11.0.0",
