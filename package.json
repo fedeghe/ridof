@@ -5,7 +5,7 @@
     "main": "dist/index.js",
     "scripts": {
         "build": "malta source/build.json",
- \       "buildev": "malta source/buildev.json",
+        "buildev": "malta source/buildev.json",
         "clean": "malta source/clean.json",
         "lint": "eslint --ignore-path .eslintignore .",
         "test": "mocha",
