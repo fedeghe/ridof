@@ -6,6 +6,6 @@
  d88      d88 88b  ,88b 88b  d88 d88
 d88'     d88' `?88P'`88b`?8888P'd88'
 
-                                      v. maltaV('PACKAGE.version')
+                                    v. maltaV('PACKAGE.version')
 
 Size: __SIZE__
