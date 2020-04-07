@@ -9,7 +9,7 @@
         "clean": "malta source/clean.json",
         "lint": "eslint --ignore-path .eslintignore .",
         "test": "mocha",
-        "prepublishOnly": "npm i && malta source/build.json",
+        "prepublishOnly": "yarn && malta source/build.json",
         "precommit": "yarn lint",
         "cover": "nyc yarn test && nyc report --reporter=html",
         "coveralls": "nyc yarn test && nyc report --reporter=text-lcov | coveralls"
