@@ -13,7 +13,6 @@ Store.prototype.getState = function () {
     return this.states[this.currentIndex];
 };
 
-// eslint-disable-next-line complexity
 Store.prototype.dispatch = function (action, add) {
     if (!('type' in action)) {
         throw new Error(ERRORS.ACTION_TYPE);
@@ -22,10 +21,9 @@ Store.prototype.dispatch = function (action, add) {
         throw new Error(ERRORS.UNAUTHORIZED_STATECHANGE);
     }
 
-    // eslint-disable-next-line one-var
     var actionType = action.type,
         newState = this.reducer(
-            this.states[this.currentIndex], // old state      */
+            this.states[this.currentIndex],
             actionType,
             action),
         i;
@@ -49,8 +47,8 @@ Store.prototype.subscribe = function (subscriber) {
         p;
     this.listeners.push(subscriber);
     p = this.listeners.length - 1;
-    //
-    // return the unsubcriber
+
+    // unsubcriber
     return function () {
         self.listeners = self.listeners.slice(0, p).concat(self.listeners.slice(p + 1));
     };
@@ -77,7 +75,7 @@ Store.prototype.move = function (to) {
         versus = to > 0 ? 'FORWARD' : 'BACKWARD',
         willChange = tmpIndex > -1 && tmpIndex < this.states.length;
     this.currentIndex = willChange ? tmpIndex : this.currentIndex;
-    //
+
     willChange && this.listeners.forEach(function (sub) {
         sub(oldState, self.getState(), { type: ['TIMETRAVEL_', versus].join('') });
     });

@@ -24,9 +24,11 @@ describe('time travel', () => {
             }
             return newState;
         };
+    
     before(() => {
         store = Ridof.getStore(reducer, initState);
     });
+
     it('should move between states back and forth', () => {
         var count = 0;
         store.subscribe(() => {
@@ -52,9 +54,12 @@ describe('time travel', () => {
         assert.strictEqual(JSON.stringify(store.getState()), JSON.stringify({ number: 3, valid: true }));
         store.move(2);
         assert.strictEqual(JSON.stringify(store.getState()), JSON.stringify({ number: 4, valid: false }));
-        assert.strictEqual(count, 8);// 6 + 2 moves
+        store.move(-5);
+        assert.strictEqual(JSON.stringify(store.getState()), JSON.stringify({ number: 0, valid: true }));
+        assert.strictEqual(count, 9);// 6 + 3 moves
         store.reset();
     });
+
     it('should slice the forward states when dispatch in the middle', () => {
         var count = 0;
         store.subscribe(() => {
@@ -97,6 +102,7 @@ describe('time travel', () => {
         assert.strictEqual(count, 8);// 7 + 1 move
         store.reset();
     });
+    
     it('should not move too far', () => {
         var count = 0;
         store.subscribe(() => {
