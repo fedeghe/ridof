@@ -20,7 +20,6 @@ Store.prototype.dispatch = function (action, add) {
     if (!this.tagsManager.canMoveTo(action.type)) {
         throw new Error(ERRORS.UNAUTHORIZED_STATECHANGE);
     }
-
     var actionType = action.type,
         newState = this.reducer(
             this.states[this.currentIndex],
@@ -36,7 +35,6 @@ Store.prototype.dispatch = function (action, add) {
             }
         }
     }
-
     _pushState(this, newState, actionType);
     return this;
 };
