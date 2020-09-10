@@ -27,7 +27,7 @@
     "homepage": "https://github.com/fedeghe/ridof#readme",
     "devDependencies": {
         "coveralls": "^3.0.9",
-        "eslint": "^6.0.1",
+        "eslint": "^7.8.1",
         "eslint-config-standard": "^14.1.1",
         "eslint-plugin-import": "^2.20.1",
         "eslint-plugin-node": "^11.0.0",
@@ -36,8 +36,8 @@
         "malta": "4.1.17",
         "malta-header-comment": "^1.0.5",
         "malta-js-uglify": "^1.0.3",
-        "malta-mocha": "^1.0.16",
-        "mocha": "^7.1.1",
+        "malta-mocha": "^1.0.17",
+        "mocha": "^8.1.3",
         "mocha-lcov-reporter": "^1.3.0",
         "nyc": "^15.0.0"
     }
