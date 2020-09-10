@@ -1,3 +1,4 @@
+'use strict';
 /*
            d8,      d8b            ,d8888b
           `8P       88P            88P'
