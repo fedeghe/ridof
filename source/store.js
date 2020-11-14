@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 function Store (reducer, state, config) {
-    _isFunction(reducer, ERRORS.REDUCERS_FUCTION);
+    _isFunction(reducer, ERRORS.REDUCERS_FUNCTION);
     this.reducer = reducer;
     this.state = typeof state !== 'undefined' ? state : this.reducer();
     this.states = [this.state];
@@ -53,7 +53,7 @@ Store.prototype.subscribe = function (subscriber) {
 };
 
 Store.prototype.replaceReducer = function (reducer) {
-    _isFunction(reducer, ERRORS.REDUCERS_FUCTION);
+    _isFunction(reducer, ERRORS.REDUCERS_FUNCTION);
     this.reducer = reducer;
 };
 

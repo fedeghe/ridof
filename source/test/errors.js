@@ -5,7 +5,7 @@ describe('errors', () => {
             Ridof.getStore();
         } catch (e) {
             assert.strictEqual(e instanceof Error, true);
-            assert.strictEqual(e.message, ERRORS.REDUCERS_FUCTION);
+            assert.strictEqual(e.message, ERRORS.REDUCERS_FUNCTION);
         }
     });
 
