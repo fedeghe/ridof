@@ -175,10 +175,10 @@ From version 1.2.0 is possible to restrict the state transitions passing to `get
 
 ``` js
 Ridof.getStore(reducer, initState, {
-    'INITIAL': [1 /* can go to INCREMENT*/],
+    'INITIAL': ['INCREMENT' /* can go to INCREMENT*/],
     'INCREMENT': [
-        2, // decrement, but not increment again
-        3 // pow
+        'DECREMENT', // can decrement and pow , but not increment again
+        'POW'
     ],
     'DECREMENT': [/* anywhere*/]
     'POW': [/* anywhere*/]

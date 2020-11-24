@@ -9,6 +9,20 @@ function Store (reducer, state, config) {
     this.listeners = [];
 }
 
+Store.prototype.pushState = function (newState, actionType) {
+    var oldState = this.states[this.currentIndex];
+    this.listeners.forEach(function (sub) {
+        sub(oldState, newState, actionType);
+    });
+    if (this.currentIndex < this.states.length - 1) {
+        this.states = this.states.slice(0, this.currentIndex);
+        this.tagsManager.reset(this.currentIndex + 1);
+    }
+    ++this.currentIndex;
+    this.tagsManager.add(actionType, this.currentIndex);
+    this.states[this.currentIndex] = newState;
+};
+
 Store.prototype.getState = function () {
     return this.states[this.currentIndex];
 };
@@ -17,7 +31,7 @@ Store.prototype.dispatch = function (action, add) {
     if (!('type' in action)) {
         throw new Error(ERRORS.ACTION_TYPE);
     }
-    if (!this.tagsManager.canMoveTo(action.type)) {
+    if (!this.tagsManager.canMoveTo(action.type, this.state)) {
         throw new Error(ERRORS.UNAUTHORIZED_STATECHANGE);
     }
     var actionType = action.type,
@@ -35,7 +49,7 @@ Store.prototype.dispatch = function (action, add) {
             }
         }
     }
-    _pushState(this, newState, actionType);
+    this.pushState(newState, actionType);
     return this;
 };
 

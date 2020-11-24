@@ -2,7 +2,6 @@
 var Ridof = (function () {
     'use strict';
 
-
     // eslint-disable-next-line semi
     maltaF('errors.js')
     // eslint-disable-next-line semi
@@ -11,7 +10,6 @@ var Ridof = (function () {
     maltaF('tagsManager.js')
     // eslint-disable-next-line semi
     maltaF('store.js')
-
 
     function combine (reducers) {
         const initState = {};
