@@ -4,7 +4,8 @@ function Store (reducer, state, config) {
     this.reducer = reducer;
     this.state = typeof state !== 'undefined' ? state : this.reducer();
     this.states = [this.state];
-    this.tagsManager = new TagsManager('INITIAL', config);
+    this.config = config;
+    this.tagsManager = new TagsManager('INITIAL', this.config);
     this.currentIndex = 0;
     this.listeners = [];
 }

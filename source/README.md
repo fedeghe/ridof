@@ -171,16 +171,13 @@ store.dispatch({ type: 'END' });
 
 Restrict state transitions  
 
-From version 1.2.0 is possible to restrict the state transitions passing to `getStore` a third config parameter: 
+From version 1.3.0 is possible to restrict the state transitions passing to `getStore` a third config parameter as a function: 
 
 ``` js
-Ridof.getStore(reducer, initState, {
-    'INITIAL': ['INCREMENT' /* can go to INCREMENT*/],
-    'INCREMENT': [
-        'DECREMENT', // can decrement and pow , but not increment again
-        'POW'
-    ],
-    'DECREMENT': [/* anywhere*/]
-    'POW': [/* anywhere*/]
-})
+Ridof.getStore(reducer, initState, (currentTag, nextTag, state) => {
+    // here tags are corresponds to action types
+    // let's say we want only one plugin to be added
+    if (currentTag === 'ADDPLUGIN' && nextState === 'ADDPLUGIN') return false
+    return true
+});
 ```

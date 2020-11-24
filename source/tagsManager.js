@@ -1,8 +1,6 @@
 function TagsManager (init, config) {
     this.activeCheck = !!config;
-    this.config = config || function () { return true; };
-    console.log(this.config.toString());
-    console.log('==========');
+    this.config = config;
     this.tags = [init];
     this.index = 0;
 }
@@ -19,7 +17,7 @@ TagsManager.prototype.canMoveTo = function (nextTag, state) {
 };
 
 TagsManager.prototype.add = function (tag, index) {
-    this.index = index || (this.index + 1);
+    this.index = index;
     this.tags[this.index] = tag;
 };
 

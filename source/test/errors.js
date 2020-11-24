@@ -38,9 +38,9 @@ describe('errors', () => {
             assert.strictEqual(e.message, ERRORS.ACTION_TYPE);
         }
     });
-    it.only('throws an Error if dispatch an action that is not valid', () => {
+    it('throws an Error if dispatch an action that is not valid', () => {
         try {
-            const store = Ridof.getStore(() => ({}), {});
+            const store = Ridof.getStore(() => ({}), {}, () => false);
             store.dispatch({ type: 'XXXDECREMENT' });
         } catch (e) {
             assert.strictEqual(e instanceof Error, true);
