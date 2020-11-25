@@ -177,7 +177,7 @@ From version 1.3.0 is possible to restrict the state transitions passing to `get
 Ridof.getStore(reducer, initState, (currentTag, nextTag, state) => {
     // here tags are corresponds to action types
     // let's say we want only one plugin to be added
-    if (currentTag === 'ADDPLUGIN' && nextState === 'ADDPLUGIN') return false
+    if (currentTag === 'ADDPLUGIN' && nextTag === 'ADDPLUGIN') return false
     return true
 });
 ```
