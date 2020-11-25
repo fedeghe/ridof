@@ -1,6 +1,10 @@
 .coveralls.yml
 .travis.yml
+.printVersion
 /coverage
 /node_modules
-.printVersion
 /test
+/source
+/.nyc_output
+.eslintrc
+.eslintignore

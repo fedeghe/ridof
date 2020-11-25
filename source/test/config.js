@@ -26,17 +26,21 @@ describe('config restrictions', () => {
                     return newState;
             }
             return newState;
-        };
-    beforeEach(() => {
-        store = Ridof.getStore(reducer, initState, {
-            'INITIAL': [1, 2],
-            'INCREMENT': [1, 2, 3, 4, 5],
-            'DECREMENT': [1, 2, 3, 4, 5],
-            'INVALIDATE': [],
-            'VALIDATE': [],
-            'RESET': []
+        },
+        
+        store = Ridof.getStore(reducer, initState, (currentTag, nextTag, state) => {
+            if (currentTag === 'INITIAL') {
+                return  ['INCREMENT', 'DECREMENT'].indexOf(nextTag) >= 0
+            }
+            if (currentTag === 'INCREMENT' || currentTag === 'DECREMENT') {
+                return  ['INCREMENT', 'DECREMENT', 'INVALIDATE', 'VALIDATE', 'RESET'].indexOf(nextTag) >= 0
+            }
+            if (currentTag === 'VALIDATE') {
+                return  nextTag !== 'INVALIDATE'
+            }
+            return true
         });
-    });
+
     it('should throw an error when trying to invalidate', () => {
         try {
             store.dispatch({ type: 'INVALIDATE' });

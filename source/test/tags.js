@@ -33,10 +33,17 @@ describe('no transition config', () => {
 });
 
 describe('with transition config', () => {
-    var store = Ridof.getStore(() => ({}), {
-            'INITIAL': ['INCREMENT'],
-            'INCREMENT': ['DECREMENT'],
-            'DECREMENT': ['DECREMENT', 'VALIDATE']
+    var store = Ridof.getStore(state => state, {}, (currentTag, nextTag, state) => {
+            if (currentTag === 'INITIAL') {
+                return  ['INCREMENT', 'DECREMENT'].indexOf(nextTag) >= 0
+            }
+            if (currentTag === 'INCREMENT' || currentTag === 'DECREMENT') {
+                return  ['INCREMENT', 'DECREMENT', 'INVALIDATE', 'VALIDATE', 'RESET'].indexOf(nextTag) >= 0
+            }
+            if (currentTag === 'VALIDATE') {
+                return  nextTag !== 'INVALIDATE'
+            }
+            return true
         }),
         ERRORS = Ridof.ERRORS;
     it('the tagsManager should contain the expected values', () => {
@@ -49,16 +56,22 @@ describe('with transition config', () => {
         store.dispatch({
             type: 'DECREMENT'
         });
-        assert.strictEqual(JSON.stringify(store.tagsManager.tags), JSON.stringify(['INITIAL', 'INCREMENT', 'INCREMENT', 'DECREMENT']));
+        assert.strictEqual(
+            JSON.stringify(store.tagsManager.tags),
+            JSON.stringify(['INITIAL', 'INCREMENT', 'INCREMENT', 'DECREMENT'])
+        );
         assert.strictEqual(Ridof.isStore(store), true);
     });
 
     it('after move the dispatch clean up the following tags', () => {
-        // store.move(-1);
+        store.move(-1);
         store.dispatch({
             type: 'VALIDATE'
         });
-        assert.strictEqual(JSON.stringify(store.tagsManager.tags), JSON.stringify(['INITIAL', 'INCREMENT', 'INCREMENT', 'DECREMENT', 'VALIDATE']));
+        assert.strictEqual(
+            JSON.stringify(store.tagsManager.tags),
+            JSON.stringify(['INITIAL', 'INCREMENT', 'INCREMENT', 'VALIDATE'])
+        );
         assert.strictEqual(Ridof.isStore(store), true);
     });
 
@@ -72,7 +85,10 @@ describe('with transition config', () => {
         } catch (e) {
             assert.strictEqual(e instanceof Error, true);
             assert.strictEqual(e.message, ERRORS.UNAUTHORIZED_STATECHANGE);
-            assert.strictEqual(JSON.stringify(store.tagsManager.tags), JSON.stringify(['INITIAL', 'INCREMENT', 'INCREMENT', 'DECREMENT', 'VALIDATE']));
+            assert.strictEqual(
+                JSON.stringify(store.tagsManager.tags),
+                JSON.stringify(['INITIAL', 'INCREMENT', 'INCREMENT', 'VALIDATE'])
+            );
         }
     });
 });

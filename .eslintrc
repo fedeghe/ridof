@@ -32,6 +32,7 @@
                 "maxEOF": 1
             }
         ],
+        "no-prototype-builtins": 0,
         "no-useless-call": 0,
         "one-var": [
             "error",
