@@ -60,6 +60,7 @@ describe('time travel', () => {
         store.reset();
     });
 
+
     it('should slice the forward states when dispatch in the middle', () => {
         var count = 0;
         store.subscribe(() => {
@@ -189,6 +190,10 @@ describe('time travel', () => {
             number: 9
         });
         store.reset();// for listeners
+
+        /**
+         * now the state is anyway the original
+         */
         store.subscribe((oldState, newState, action) => {
             assert.strictEqual(
                 JSON.stringify(oldState),
@@ -199,9 +204,12 @@ describe('time travel', () => {
                 JSON.stringify({ name: 'static' })
             );
         });
+
+        // change the reducer, which will return alway the same thing that (on the first dispatch) differs from previous empty obj
         store.replaceReducer(() => ({ name: 'static' }));
         store.dispatch({
             type: 'NOT REALLY MATTER'
         });
     });
+
 });

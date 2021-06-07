@@ -65,6 +65,9 @@ describe('basic actions', () => {
 
     it('all subscribers are notified', () => {
         var count = 3;
+        // has been resetted in 'before' thus change it
+        // otherwise the subscribers will not be called
+        store.dispatch({type: 'INCREMENT'})
         store.subscribe((oldState, newState, action) => {
             count *= 5;
         });

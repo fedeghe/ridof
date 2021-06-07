@@ -12,16 +12,18 @@ function Store (reducer, state, config) {
 
 Store.prototype.pushState = function (newState, actionType) {
     var oldState = this.states[this.currentIndex];
-    this.listeners.forEach(function (sub) {
-        sub(oldState, newState, actionType);
-    });
-    if (this.currentIndex < this.states.length - 1) {
-        this.states = this.states.slice(0, this.currentIndex);
-        this.tagsManager.reset(this.currentIndex + 1);
+    if (JSON.stringify(oldState) !== JSON.stringify(newState)) {
+        this.listeners.forEach(function (sub) {
+            sub(oldState, newState, actionType);
+        });
+        if (this.currentIndex < this.states.length - 1) {
+            this.states = this.states.slice(0, this.currentIndex);
+            this.tagsManager.reset(this.currentIndex + 1);
+        }
+        ++this.currentIndex;
+        this.tagsManager.save(actionType, this.currentIndex);
+        this.states[this.currentIndex] = newState;
     }
-    ++this.currentIndex;
-    this.tagsManager.add(actionType, this.currentIndex);
-    this.states[this.currentIndex] = newState;
 };
 
 Store.prototype.getState = function () {
@@ -32,7 +34,7 @@ Store.prototype.dispatch = function (action, add) {
     if (!('type' in action)) {
         throw new Error(ERRORS.ACTION_TYPE);
     }
-    if (!this.tagsManager.canMoveTo(action.type, this.state)) {
+    if (!this.tagsManager.canMoveTo(action.type, this.state, action)) {
         throw new Error(ERRORS.UNAUTHORIZED_STATECHANGE);
     }
     var actionType = action.type,
@@ -80,6 +82,10 @@ Store.prototype.reset = function () {
     this.listeners = [];
 };
 
+/**
+ * changes the currentIndex, and lets the listener know
+ * @param {*} to
+ */
 Store.prototype.move = function (to) {
     if (to === 0) return this;
     var self = this,

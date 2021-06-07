@@ -9,15 +9,17 @@ TagsManager.prototype.getCurrent = function () {
     return this.tags[this.index];
 };
 
-TagsManager.prototype.canMoveTo = function (nextTag, state) {
+TagsManager.prototype.canMoveTo = function (nextTag, state, action) {
     var currentTag = this.getCurrent();
     return this.activeCheck
-        ? this.config(currentTag, nextTag, state)
+        ? this.config(currentTag, nextTag, state, action)
         : true;
 };
 
-TagsManager.prototype.add = function (tag, index) {
+TagsManager.prototype.save = function (tag, index) {
     this.index = index;
+    // cleanup
+    this.tags = this.tags.slice(0, index);
     this.tags[this.index] = tag;
 };
 

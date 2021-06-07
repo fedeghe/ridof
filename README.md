@@ -174,7 +174,7 @@ Restrict state transitions
 From version 1.3.0 is possible to restrict the state transitions passing to `getStore` a third config parameter as a function: 
 
 ``` js
-Ridof.getStore(reducer, initState, (currentTag, nextTag, state) => {
+Ridof.getStore(reducer, initState, (currentTag, nextTag, state, action) => {
     // here tags are corresponds to action types
     // let's say we want only one plugin to be added
     if (currentTag === 'ADDPLUGIN' && nextTag === 'ADDPLUGIN') return false

@@ -1,5 +1,14 @@
 describe('no transition config', () => {
-    var store = Ridof.getStore(() => ({}));
+    var store = Ridof.getStore((state, action, params) => {
+        var newState = Object.assign({}, state);
+        switch(action) {
+            case 'INCREMENT': newState.count++; break;
+            case 'DECREMENT': newState.count--; break;
+            case 'VALIDATE': newState.valid = true;break;
+            default:break;
+        }
+        return newState;
+    }, {count: 0, valid: false});
     it('the tagsManager should be empty', () => {
         assert.strictEqual(store.tagsManager.getCurrent(store), 'INITIAL');
     });
@@ -13,13 +22,19 @@ describe('no transition config', () => {
         store.dispatch({
             type: 'DECREMENT'
         });
-        assert.strictEqual(JSON.stringify(store.tagsManager.tags), JSON.stringify(['INITIAL', 'INCREMENT', 'INCREMENT', 'DECREMENT']));
+        assert.strictEqual(
+            JSON.stringify(store.tagsManager.tags),
+            JSON.stringify(['INITIAL', 'INCREMENT', 'INCREMENT', 'DECREMENT'])
+        );
         assert.strictEqual(Ridof.isStore(store), true);
     });
 
     it('after moving the tagsManager should contain the expected values', () => {
         store.move(-2);
-        assert.strictEqual(JSON.stringify(store.tagsManager.tags), JSON.stringify(['INITIAL', 'INCREMENT', 'INCREMENT', 'DECREMENT']));
+        assert.strictEqual(
+            JSON.stringify(store.tagsManager.tags),
+            JSON.stringify(['INITIAL', 'INCREMENT', 'INCREMENT', 'DECREMENT'])
+        );
         assert.strictEqual(store.tagsManager.getCurrent(), 'DECREMENT');
     });
 
@@ -33,18 +48,31 @@ describe('no transition config', () => {
 });
 
 describe('with transition config', () => {
-    var store = Ridof.getStore(state => state, {}, (currentTag, nextTag, state) => {
-            if (currentTag === 'INITIAL') {
-                return  ['INCREMENT', 'DECREMENT'].indexOf(nextTag) >= 0
+    var store = Ridof.getStore(
+            (state, action, params) => {
+                var newState = Object.assign({}, state);
+                switch(action) {
+                    case 'INCREMENT': newState.count++; break;
+                    case 'DECREMENT': newState.count--; break;
+                    case 'VALIDATE': newState.valid = true;break;
+                    default:break;
+                }
+                return newState;
+            },
+            {count: 0, valid: false},
+            (currentTag, nextTag, state) => {
+                if (currentTag === 'INITIAL') {
+                    return  ['INCREMENT', 'DECREMENT'].indexOf(nextTag) >= 0
+                }
+                if (currentTag === 'INCREMENT' || currentTag === 'DECREMENT') {
+                    return  ['INCREMENT', 'DECREMENT', 'INVALIDATE', 'VALIDATE'].indexOf(nextTag) >= 0
+                }
+                if (currentTag === 'VALIDATE') {
+                    return  nextTag !== 'INVALIDATE'
+                }
+                return true
             }
-            if (currentTag === 'INCREMENT' || currentTag === 'DECREMENT') {
-                return  ['INCREMENT', 'DECREMENT', 'INVALIDATE', 'VALIDATE', 'RESET'].indexOf(nextTag) >= 0
-            }
-            if (currentTag === 'VALIDATE') {
-                return  nextTag !== 'INVALIDATE'
-            }
-            return true
-        }),
+        ),
         ERRORS = Ridof.ERRORS;
     it('the tagsManager should contain the expected values', () => {
         store.dispatch({
