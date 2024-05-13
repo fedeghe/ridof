@@ -8,12 +8,6 @@ Simple isomorphic state manager
 
     @ yarn add ridof
 
-## Run the tests coverage
-
-
-    @ cd node_modules/ridof
-    @ yarn && yarn build && yarn cover
-
 ## Use it
 
 Create a store
