@@ -7,14 +7,14 @@ function Store (reducer, state, config) {
     this.config = config;
     this.tagsManager = new TagsManager('INITIAL', this.config);
     this.currentIndex = 0;
-    this.listeners = [];
+    this.subscribers = [];
 }
 
 Store.prototype.pushState = function (newState, actionType) {
     var oldState = this.states[this.currentIndex];
     if (JSON.stringify(oldState) !== JSON.stringify(newState)) {
-        this.listeners.forEach(function (sub) {
-            sub(oldState, newState, actionType);
+        this.subscribers.forEach(function (subscriber) {
+            subscriber(oldState, newState, actionType);
         });
         if (this.currentIndex < this.states.length - 1) {
             this.states = this.states.slice(0, this.currentIndex);
@@ -38,10 +38,11 @@ Store.prototype.dispatch = function (action, add) {
         throw new Error(ERRORS.UNAUTHORIZED_STATECHANGE);
     }
     var actionType = action.type,
-        newState = this.reducer(
-            this.states[this.currentIndex],
-            actionType,
-            action),
+        newState = this.reducer({
+            oldState: this.states[this.currentIndex],
+            action: actionType,
+            payload: action
+        }),
         i;
     _isDefined(newState, ERRORS.REDUCERS_RETURN);
     delete newState.type;
@@ -60,12 +61,12 @@ Store.prototype.subscribe = function (subscriber) {
     _isFunction(subscriber, ERRORS.SUBSCRIBERS_FUNCTION);
     var self = this,
         p;
-    this.listeners.push(subscriber);
-    p = this.listeners.length - 1;
+    this.subscribers.push(subscriber);
+    p = this.subscribers.length - 1;
 
     // unsubcriber
     return function () {
-        self.listeners = self.listeners.slice(0, p).concat(self.listeners.slice(p + 1));
+        self.subscribers = self.subscribers.slice(0, p).concat(self.subscribers.slice(p + 1));
     };
 };
 
@@ -79,7 +80,7 @@ Store.prototype.reset = function () {
     this.states = [s0];
     this.currentIndex = 0;
     this.tagsManager.reset();
-    this.listeners = [];
+    this.subscribers = [];
 };
 
 /**
@@ -95,7 +96,7 @@ Store.prototype.move = function (to) {
         willChange = tmpIndex > -1 && tmpIndex < this.states.length;
     this.currentIndex = willChange ? tmpIndex : this.currentIndex;
 
-    willChange && this.listeners.forEach(function (sub) {
+    willChange && this.subscribers.forEach(function (sub) {
         sub(oldState, self.getState(), { type: ['TIMETRAVEL_', versus].join('') });
     });
     return this;
