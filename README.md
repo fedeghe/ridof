@@ -20,7 +20,7 @@ const initialState = {
 }
 // The reducer function
 // params holds all the values passed to dispatch but the type
-const reducer = (oldState, action, params) => {
+const reducer = (oldState, action, payload) => {
     const newState = Object.assign({}, oldState)
     switch (action) {
         case 'INCREMENT':
@@ -33,7 +33,7 @@ const reducer = (oldState, action, params) => {
             newState.num *= newState.num;
             break;
         case 'RENAME':
-            newState.name = params.name || 'no name given';
+            newState.name = payload.name || 'no name given';
             break;
     }
     return newState;
@@ -52,7 +52,7 @@ Store.dispatch({type: 'POW'}) // -> {num: 64, name: 'Federico'}
 Store.dispatch({type: 'INCREMENT'}) // -> {num: 65, name: 'Federico'}
 Store.dispatch({type: 'POW'}) // -> {num: 4225, name: 'Federico'}
 Store.dispatch({type: 'RENAME'}) // -> {num: 4225, name: 'no name given'}
-Store.dispatch({type: 'RENAME', name: 'Foo'}) // -> {num: 4225, name: 'Foo'}
+Store.dispatch({type: 'RENAME', payload: {name: 'Foo'}}) // -> {num: 4225, name: 'Foo'}
 ...
 ```
 ## Time travel 
@@ -68,9 +68,9 @@ Creates a store given one reducer function
 const Store = Ridof.getStore(reducer, [initialStatus || {}]);
 ```
 the reducer function will receive the following:
-- **state**: the current state
+- **oldState**: the current state
 - **action**: the action label
-- **params**: all passed to ‘dispatch’ but the type 
+- **payload**: the ones passed to ‘dispatch’
 
 Return the current state  
 ``` js
@@ -91,20 +91,10 @@ Dispatch an action:
 ``` js
 Store.dispatch({
     type:'INCREMENT', // needs at least a type field
-    all: 'others',
-    params: 'follows'
+    payload: {}
 });
 ```
-a second `Boolean` parameter is accepted by the `dispatch`; when `true` it allows to add (after reducer action on the state) the parameters passed that are missing on the state:
-``` js
-// { num: 0 }
-Store.dispatch({
-    type:'INCREMENT', // this action only increments `num`
-    all: 'others',
-    params: 'follows'
-}, true); // it is passed so missing ones will be added
-// { num: 0, all: 'others', params: 'follows'}
-```
+
 -----
 Move in the states:
 ``` js
@@ -126,18 +116,18 @@ Store.reset();
 Combine two or more reducers
 ``` js
 var reducer = Ridof.combine({
-    mods: (state = [], action, params) => {
-        const newState = [...state];
+    mods: (oldState = [], action, payload) => {
+        const newState = [...oldState];
         switch (action) {
-            case 'ADDMOD': newState.push(params.name); break;
+            case 'ADDMOD': newState.push(payload.name); break;
             default:;
         }
         return newState;
     },
-    plugins: (state = [], action, params) => {
-        const newState = [...state];
+    plugins: (oldState = [], action, payload) => {
+        const newState = [...oldState];
         switch (action) {
-            case 'ADDPLUGIN': newState.push(params.name); break;
+            case 'ADDPLUGIN': newState.push(payload.name); break;
             default:;
         }
         return newState;
@@ -155,9 +145,22 @@ store.subscribe((oldState, newState, action) => {
         */
     }
 });
-store.dispatch({ type: 'ADDPLUGIN', name: 'myplugin' });
-store.dispatch({ type: 'ADDMOD', name: 'mymod1' });
-store.dispatch({ type: 'ADDMOD', name: 'mymod2' });
+store.dispatch({
+    type: 'ADDPLUGIN',
+    payload: { name: 'myplugin' }
+});
+store.dispatch({
+    type: 'ADDMOD',
+    payload: {
+        name: 'mymod1'
+    }
+});
+store.dispatch({
+    type: 'ADDMOD',
+    payload: {
+        name: 'mymod2'
+    }
+});
 store.dispatch({ type: 'END' });
 ```
 -----

@@ -100,38 +100,4 @@ describe('basic actions', () => {
     });
 });
 
-describe('should add to the state ', () => {
-    it('fill the state lately', () => {
-        var reducer2 = (oldState, action, params) => {
-                const newState = Object.assign({}, oldState);
-                switch (action) {
-                    case 'ADD':
-                        newState.number += 10;
-                        break;
-                    default:;
-                }
-                return newState;
-            },
-            initState = { number: 0, valid: true },
-            store = Ridof.getStore(reducer2, initState);
-        store.subscribe((oldState, newState, action) => {
-            assert.strictEqual(action, 'ADD');
-            assert.strictEqual(
-                JSON.stringify(newState),
-                JSON.stringify({
-                    number: 10,
-                    valid: true,
-                    all: 'others',
-                    parameters: 'are included'
-                })
-            );
-        });
-        store.dispatch({
-            type: 'ADD',
-            number: 9,
-            valid: true,
-            all: 'others',
-            parameters: 'are included'
-        }, true);
-    });
-});
+

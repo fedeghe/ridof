@@ -7,7 +7,7 @@ describe('readme sample', () => {
             },
             // The reducer function
             // params holds all the values passed to dispatch but the type
-            reducer = (oldState, action, params) => {
+            reducer = (oldState, action, payload) => {
                 const newState = Object.assign({}, oldState);
                 switch (action) {
                     case 'INCREMENT':
@@ -20,7 +20,7 @@ describe('readme sample', () => {
                         newState.num *= newState.num;
                         break;
                     case 'RENAME':
-                        newState.name = params.name || 'no name given';
+                        newState.name = payload.name || 'no name given';
                         break;
                     default: ;
                 }
@@ -45,9 +45,9 @@ describe('readme sample', () => {
 
         Store.subscribe((oldState, newState, action) => {
             // eslint-disable-next-line no-undef
-            assert.strictEqual(JSON.stringify(oldState), JSON.stringify(expected[index++]));
+            assert.strictEqual(JSON.stringify(oldState), JSON.stringify(expected[index]));
             // eslint-disable-next-line no-undef
-            assert.strictEqual(JSON.stringify(newState), JSON.stringify(expected[index]));
+            assert.strictEqual(JSON.stringify(newState), JSON.stringify(expected[++index]));
             index === expected.length - 1 && done();
         });
 
@@ -59,6 +59,6 @@ describe('readme sample', () => {
         Store.dispatch({ type: 'INCREMENT' });
         Store.dispatch({ type: 'POW' });
         Store.dispatch({ type: 'RENAME' });
-        Store.dispatch({ type: 'RENAME', name: 'Foo' });
+        Store.dispatch({ type: 'RENAME', payload: {name: 'Foo' }});
     });
 });

@@ -30,7 +30,7 @@ Store.prototype.getState = function () {
     return this.states[this.currentIndex];
 };
 
-Store.prototype.dispatch = function (action, add) {
+Store.prototype.dispatch = function (action) {
     if (!('type' in action)) {
         throw new Error(ERRORS.ACTION_TYPE);
     }
@@ -38,21 +38,14 @@ Store.prototype.dispatch = function (action, add) {
         throw new Error(ERRORS.UNAUTHORIZED_STATECHANGE);
     }
     var actionType = action.type,
-        newState = this.reducer({
-            oldState: this.states[this.currentIndex],
-            action: actionType,
-            payload: action
-        }),
-        i;
+        payload = action.payload || {},
+        newState = this.reducer(
+            this.states[this.currentIndex],
+            actionType,
+            payload
+        );
     _isDefined(newState, ERRORS.REDUCERS_RETURN);
     delete newState.type;
-    if (add) {
-        for (i in action) {
-            if (i !== 'type' && !(i in newState)) {
-                newState[i] = action[i];
-            }
-        }
-    }
     this.pushState(newState, actionType);
     return this;
 };
