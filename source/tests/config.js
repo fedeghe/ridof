@@ -57,7 +57,7 @@ describe('config restrictions', () => {
             assert.strictEqual(JSON.stringify(newState), JSON.stringify({ number: 2, valid: true }));
         });
     });
-    it('should not change the state/complain/pub when non existing action is dispatched', async done => {
+    it('should not change the state/complain/pub when non existing action is dispatched', () => {
         store = Ridof.getStore(reducer, initState);
         
         //this must mot be called
@@ -70,8 +70,6 @@ describe('config restrictions', () => {
         } catch (e) {
             assert.strictEqual(e instanceof Error, true);
             assert.strictEqual(e.message, 'xxx');
-        } finally {
-            await done()
         }
 
     });

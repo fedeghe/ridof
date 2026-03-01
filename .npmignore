@@ -3,7 +3,7 @@
 .printVersion
 /coverage
 /node_modules
-/test
+/tests
 /source
 /.nyc_output
 .eslintrc

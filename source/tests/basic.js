@@ -42,7 +42,7 @@ describe('basic actions', () => {
             }
             return newState;
         };
-    before(() => {
+    beforeAll(() => {
         store = Ridof.getStore(reducer, initState);
     });
     it('dispatch increment and check the state', () => {
@@ -99,5 +99,4 @@ describe('basic actions', () => {
         assert.strictEqual(states.length, 7);
     });
 });
-
 

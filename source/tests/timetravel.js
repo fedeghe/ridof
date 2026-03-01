@@ -25,7 +25,7 @@ describe('time travel', () => {
             return newState;
         };
     
-    before(() => {
+    beforeAll(() => {
         store = Ridof.getStore(reducer, initState);
     });
 

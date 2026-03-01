@@ -8,9 +8,9 @@
  d88      d88 88b  ,88b 88b  d88 d88
 d88'     d88' `?88P'`88b`?8888P'd88'
 
-                                    v. 1.3.4
+                                    v. 1.3.5
 
-Size: ~3KB
+Size: ~3.21KB
 */
 var Ridof=function(){"use strict";function t(t,e){if("function"!=typeof t)throw new Error(e)}function e(t,e){if(void 0===t)throw new Error(e)}function s(t,e){this.activeCheck=!!e,this.config=e,
 this.tags=[t],this.index=0}function r(e,r,i){t(e,n.REDUCERS_FUNCTION),this.reducer=e,this.state=void 0!==r?r:this.reducer(),this.states=[this.state],this.config=i,

@@ -1,4 +1,4 @@
-[![Coverage Status](https://coveralls.io/repos/github/fedeghe/ridof/badge.svg?branch=master)](https://coveralls.io/github/fedeghe/ridof?branch=master)
+[![codecov](https://codecov.io/gh/fedeghe/ridof/graph/badge.svg?token=WNRdYZb9Kn)](https://codecov.io/gh/fedeghe/ridof)
 
 # Ridof
 
